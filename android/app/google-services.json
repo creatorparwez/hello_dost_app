@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "608464110787",
+    "project_id": "zee-goo",
+    "storage_bucket": "zee-goo.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:608464110787:android:883bbadb0e74df94138e76",
+        "android_client_info": {
+          "package_name": "com.example.zee_goo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDe2V6Uf9VYoggpuGQ1fL-3TXTCSZjHC0I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
