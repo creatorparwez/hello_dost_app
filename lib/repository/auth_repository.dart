@@ -78,6 +78,7 @@ class AuthRepository {
               "languages": [],
               "balance": 0,
               "permission": false,
+              "isOnline": false,
               "createdAt": FieldValue.serverTimestamp(),
             });
           }
@@ -129,6 +130,7 @@ class AuthRepository {
             "languages": [],
             "balance": 0,
             "permission": false,
+            "isOnline": false,
             "createdAt": FieldValue.serverTimestamp(),
           });
         }

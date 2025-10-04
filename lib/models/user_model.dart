@@ -12,6 +12,7 @@ class UserModel {
   final int balance;
   final DateTime createdAt;
   final bool permission; // <-- NEW FIELD
+  final bool isOnline;
 
   UserModel({
     required this.uid,
@@ -25,6 +26,7 @@ class UserModel {
     this.balance = 100,
     required this.createdAt,
     this.permission = false, // default false
+    this.isOnline = false,
   });
 
   // From Firestore
@@ -45,6 +47,7 @@ class UserModel {
       balance: map['balance'] ?? 100,
       createdAt: (map['createdAt'] as Timestamp).toDate(),
       permission: map['permission'] ?? false, // <-- NEW
+      isOnline: map['isOnline'] ?? false,
     );
   }
 
@@ -62,6 +65,7 @@ class UserModel {
       "balance": balance,
       "createdAt": createdAt,
       "permission": permission, // <-- NEW
+      "isOnline": isOnline,
     };
   }
 }

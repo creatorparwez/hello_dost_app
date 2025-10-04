@@ -28,11 +28,12 @@ ZegoSendCallInvitationButton actionButton({
       "call_${currentUser.uid}_${receiverId}_${DateTime.now().millisecondsSinceEpoch}";
 
   return ZegoSendCallInvitationButton(
-    iconSize: const Size(40, 40),
-    buttonSize: const Size(70, 40),
     invitees: [ZegoUIKitUser(id: receiverId, name: receiverName)],
     isVideoCall: isVideo,
     callID: callId,
+    iconSize: const Size(28, 28),
+    buttonSize: const Size(double.infinity, 45),
+
     onPressed: (code, message, errorInvitees) {
       if (code != 0) {
         print("Failed to send invitation: $message");

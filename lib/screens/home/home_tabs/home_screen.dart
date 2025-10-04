@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
+import 'package:zee_goo/repository/call_service.dart';
 import 'package:zee_goo/screens/Login/login_page.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
 
@@ -31,7 +32,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
             // Filter out logged-in user
             final otherUsers = allUsersData
-                .where((user) => user.uid != currentUserId)
+                .where(
+                  (user) => user.uid != currentUserId && user.isOnline == true,
+                )
                 .toList();
             return ListView.builder(
               itemCount: otherUsers.length,
@@ -124,6 +127,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              ////
                               Expanded(
                                 child: TextButton(
                                   style: TextButton.styleFrom(
@@ -132,7 +136,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    sendCall(
+                                      isVideo: false,
+                                      receiverId: data.uid,
+                                      receiverName: data.name,
+                                    );
+                                  },
                                   child: Center(
                                     child: Text(
                                       "Voice Call",
@@ -154,7 +164,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       borderRadius: BorderRadius.circular(10.r),
                                     ),
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    sendCall(
+                                      isVideo: true,
+                                      receiverId: data.uid,
+                                      receiverName: data.name,
+                                    );
+                                  },
                                   child: Center(
                                     child: Text(
                                       "Video Call",

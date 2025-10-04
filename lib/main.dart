@@ -3,11 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/firebase_options.dart';
-import 'package:zee_goo/screens/Login/permission_waiting_screen.dart';
-import 'package:zee_goo/screens/Login/select_languages_screen.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
-import 'package:zee_goo/screens/Login/verify_otp.dart';
-import 'package:zee_goo/screens/home/m_screen.dart';
 import 'package:zee_goo/screens/splashScreen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
