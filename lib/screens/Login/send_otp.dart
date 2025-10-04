@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
-import 'package:zee_goo/screens/Login/signup_screen.dart';
 import 'package:zee_goo/screens/Login/verify_otp.dart';
 import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
 
@@ -103,45 +102,63 @@ class _LoginScreenState extends ConsumerState<SendOTPScreen> {
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                           ),
-                          onPressed: () async {
-                            // To send OTP
-                            if (_formKey.currentState!.validate()) {
-                              final phone =
-                                  "+91${_phoneNumberController.text.trim()}";
-                              final sendOTPProvider = ref.read(
-                                authRepositoryProvider,
-                              );
-                              ref.read(isLoadingProvider.notifier).state = true;
-
-                              try {
-                                await sendOTPProvider.sendOTP(
-                                  phoneNumber: phone,
-                                  codeSent: (verificationId, resendToken) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text("OTP Sent")),
-                                    );
-                                    // Navigate to Verify screen
-                                    Navigator.pushReplacement(
-                                      context,
-                                      PageTransition(
-                                        child: VerifyOTPScreen(),
-                                        type: PageTransitionType.rightToLeft,
-                                      ),
+                          onPressed: isLoading
+                              ? null
+                              : () async {
+                                  // To send OTP
+                                  if (_formKey.currentState!.validate()) {
+                                    final phone =
+                                        "+91${_phoneNumberController.text.trim()}";
+                                    final sendOTPProvider = ref.read(
+                                      authRepositoryProvider,
                                     );
                                     ref.read(isLoadingProvider.notifier).state =
-                                        false;
-                                  },
-                                );
-                              } catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Error: $e")),
-                                );
-                              } finally {
-                                ref.read(isLoadingProvider.notifier).state =
-                                    false;
-                              }
-                            }
-                          },
+                                        true;
+
+                                    try {
+                                      await sendOTPProvider.sendOTP(
+                                        phoneNumber: phone,
+                                        codeSent:
+                                            (verificationId, resendToken) {
+                                              ScaffoldMessenger.of(
+                                                context,
+                                              ).showSnackBar(
+                                                SnackBar(
+                                                  content: Text("OTP Sent"),
+                                                ),
+                                              );
+                                              // Navigate to Verify screen
+                                              Navigator.pushReplacement(
+                                                context,
+                                                PageTransition(
+                                                  child: VerifyOTPScreen(),
+                                                  type: PageTransitionType
+                                                      .rightToLeft,
+                                                ),
+                                              );
+                                              ref
+                                                      .read(
+                                                        isLoadingProvider
+                                                            .notifier,
+                                                      )
+                                                      .state =
+                                                  false;
+                                            },
+                                      );
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(
+                                        context,
+                                      ).showSnackBar(
+                                        SnackBar(content: Text("Error: $e")),
+                                      );
+                                    } finally {
+                                      ref
+                                              .read(isLoadingProvider.notifier)
+                                              .state =
+                                          false;
+                                    }
+                                  }
+                                },
                           child: isLoading
                               ? Center(
                                   child: CircularProgressIndicator(

@@ -26,10 +26,21 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+    // Release Signing
+    signingConfigs {
+        create("release") {
+            storeFile = file("app-release-key.jks")   // Keystore file in android/app/
+            storePassword = "280218"      // Keystore password
+            keyAlias = "app_release"                  // Key alias
+            keyPassword = "280218"        // Key password
+        }
+    }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = false
+            isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
                 "proguard-rules.pro"

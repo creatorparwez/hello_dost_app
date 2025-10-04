@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/permission_waiting_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
+import 'package:zee_goo/screens/home/m_screen.dart';
 
 class AgeScreen extends ConsumerStatefulWidget {
   const AgeScreen({super.key});
@@ -63,7 +64,7 @@ class _AgeScreenState extends ConsumerState<AgeScreen> {
       if (permission) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => const MScreen()),
         );
       } else {
         Navigator.pushReplacement(

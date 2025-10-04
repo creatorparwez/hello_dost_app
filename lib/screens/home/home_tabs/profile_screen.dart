@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
+import 'package:zee_goo/screens/home/wallet_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -27,19 +28,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             Center(
               child: CircleAvatar(
                 backgroundColor: Colors.white,
-                radius: 80,
+                radius: 100,
                 child: Image.asset(
-                  'assets/gender/male_2.png',
+                  datas.gender == "Male"
+                      ? 'assets/gender/male_22.png'
+                      : 'assets/gender/female_3.png',
                   fit: BoxFit.cover,
                 ),
               ),
             ),
-            SizedBox(height: 5.h),
+            SizedBox(height: 3.h),
             Text(
-              datas.userId,
+              datas.name,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
-            SizedBox(height: 20.h),
+            SizedBox(height: 10.h),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.w),
               child: Column(
@@ -52,7 +55,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                       elevation: 3,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      // To see Wallet
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => WalletScreen(userId: datas.uid),
+                        ),
+                      );
+                    },
                     child: Center(
                       child: Text("Wallet", style: TextStyle(fontSize: 20)),
                     ),

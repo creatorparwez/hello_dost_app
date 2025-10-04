@@ -1,0 +1,143 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:zee_goo/providers/User/user_provider.dart';
+
+class WalletScreen extends ConsumerStatefulWidget {
+  final String userId;
+  const WalletScreen({super.key, required this.userId});
+
+  @override
+  ConsumerState<WalletScreen> createState() => _WalletScreenState();
+}
+
+class _WalletScreenState extends ConsumerState<WalletScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Wallet Information",
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: IconThemeData(color: Colors.white),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 29, 28, 28),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 10.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+            child: Container(
+              height: 200.h,
+              width: 1.sw,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.deepOrange, Colors.blueAccent, Colors.blue],
+                ),
+                color: Colors.deepOrange,
+                borderRadius: BorderRadius.circular(20.sp),
+              ),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 40.w),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Balance",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 38.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            Image.asset(
+                              'assets/images/dollar.png',
+                              height: 38.h,
+                              width: 38.w,
+                            ),
+                            SizedBox(width: 15.w),
+                            Consumer(
+                              builder: (context, ref, _) {
+                                final userData = ref.watch(
+                                  userDataProvider(widget.userId),
+                                );
+                                return userData.when(
+                                  data: (data) {
+                                    return Text(
+                                      data.balance.toString(),
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 35.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    );
+                                  },
+                                  error: (err, _) => Text(err.toString()),
+                                  loading: () => Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 10.w),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              elevation: 8,
+                              backgroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.r),
+                              ),
+                            ),
+                            onPressed: () {
+                              // Buy Coins
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              child: Text(
+                                "Buy Coins",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Spacer(),
+                    Icon(Iconsax.wallet_35, color: Colors.white, size: 80.sp),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
+            child: Text(
+              "Recent Transactions",
+              style: TextStyle(
+                fontWeight: FontWeight.w400,
+                fontSize: 22,
+                color: const Color.fromARGB(255, 41, 41, 41),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

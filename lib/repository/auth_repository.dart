@@ -57,32 +57,7 @@ class AuthRepository {
       phoneNumber: phoneNumber,
       timeout: const Duration(seconds: 60),
       verificationCompleted: (PhoneAuthCredential credential) async {
-        final userCredential = await _auth.signInWithCredential(credential);
-        final user = userCredential.user;
-
-        if (user != null) {
-          final userDoc = await _firestore
-              .collection("users")
-              .doc(user.uid)
-              .get();
-
-          if (!userDoc.exists) {
-            await _firestore.collection("users").doc(user.uid).set({
-              "uid": user.uid,
-              "UserId": "",
-              "name": user.displayName ?? "",
-              "phone": user.phoneNumber,
-              "gender": "",
-              "age": null,
-              "interests": [],
-              "languages": [],
-              "balance": 0,
-              "permission": false,
-              "isOnline": false,
-              "createdAt": FieldValue.serverTimestamp(),
-            });
-          }
-        }
+        await _auth.signInWithCredential(credential);
       },
       verificationFailed: (FirebaseAuthException ex) {
         throw Exception("Verification failed: ${ex.message}");

@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/gender_screen.dart';
 import 'package:zee_goo/screens/Login/select_languages_screen.dart';
-import 'package:zee_goo/screens/Login/signup_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
 import 'package:zee_goo/screens/home/m_screen.dart';
 
@@ -113,16 +113,26 @@ class _LoginScreenState extends ConsumerState<VerifyOTPScreen> {
                               ref.read(isLoadingProvider.notifier).state = true;
 
                               try {
-                                await verifyOTPProvider.verifyOTP(otp);
-                                final userDoc =
-                                    FirebaseAuth.instance.currentUser!.uid;
-                                final userData = await FirebaseFirestore
-                                    .instance
+                                final user = await verifyOTPProvider.verifyOTP(
+                                  otp,
+                                );
+                                if (user == null) {
+                                  throw Exception(
+                                    "User not found after OTP verification",
+                                  );
+                                }
+                                final userDoc = await FirebaseFirestore.instance
                                     .collection('users')
-                                    .doc(userDoc)
+                                    .doc(user.uid)
                                     .get();
 
-                                if (userData.exists) {
+                                final userData = UserModel.fromMap(
+                                  userDoc.data()!,
+                                  userDoc.id,
+                                );
+                                if (userData.languages != null &&
+                                    userData.languages!.isNotEmpty) {
+                                  // User has selected languages → go to home screen
                                   Navigator.pushReplacement(
                                     context,
                                     PageTransition(

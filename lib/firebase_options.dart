@@ -47,29 +47,29 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyB85q2AWWZPwInlZOf2E1eYZFz-A4OD1ZM',
-    appId: '1:608464110787:web:a911c1f087eda814138e76',
-    messagingSenderId: '608464110787',
-    projectId: 'zee-goo',
-    authDomain: 'zee-goo.firebaseapp.com',
-    storageBucket: 'zee-goo.firebasestorage.app',
-    measurementId: 'G-1JED76V3WT',
+    apiKey: 'AIzaSyBinqL6jZYlHRBfFSdNh5rscLNCubOaZoA',
+    appId: '1:266456052663:web:7119729109f8298622ae32',
+    messagingSenderId: '266456052663',
+    projectId: 'hello-dost-92afc',
+    authDomain: 'hello-dost-92afc.firebaseapp.com',
+    storageBucket: 'hello-dost-92afc.firebasestorage.app',
+    measurementId: 'G-5JKPYWFPMD',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDe2V6Uf9VYoggpuGQ1fL-3TXTCSZjHC0I',
-    appId: '1:608464110787:android:883bbadb0e74df94138e76',
-    messagingSenderId: '608464110787',
-    projectId: 'zee-goo',
-    storageBucket: 'zee-goo.firebasestorage.app',
+    apiKey: 'AIzaSyCJYRUvF2bkcbCuMn14-muXEdeiBWuySKQ',
+    appId: '1:266456052663:android:554c128662cdd88422ae32',
+    messagingSenderId: '266456052663',
+    projectId: 'hello-dost-92afc',
+    storageBucket: 'hello-dost-92afc.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDfaHVdEjmUWhqqMnIRMMXSNxUwWD1nMVQ',
-    appId: '1:608464110787:ios:a92453686ce19af4138e76',
-    messagingSenderId: '608464110787',
-    projectId: 'zee-goo',
-    storageBucket: 'zee-goo.firebasestorage.app',
+    apiKey: 'AIzaSyCHvuXOuVZZqTO23KOn8iiDmDCzG2w6jy0',
+    appId: '1:266456052663:ios:f0b00e7cc91beccb22ae32',
+    messagingSenderId: '266456052663',
+    projectId: 'hello-dost-92afc',
+    storageBucket: 'hello-dost-92afc.firebasestorage.app',
     iosBundleId: 'com.example.zeeGoo',
   );
 }
