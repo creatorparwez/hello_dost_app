@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
-import 'package:zee_goo/screens/home/wallet_screen.dart';
+import 'package:zee_goo/screens/home/home_tabs/profile_options/buy_coins_screen.dart';
+import 'package:zee_goo/screens/home/home_tabs/profile_options/wallet_screen.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -17,7 +19,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
-    final userDatas = ref.watch(userDataProvider(currentUser!.uid));
+    if (currentUser == null) {
+      return Center(child: Text("User not logged in"));
+    }
+    final userDatas = ref.watch(userDataProvider(currentUser.uid));
     final authRepo = ref.read(authRepositoryProvider);
     return userDatas.when(
       data: (datas) {
@@ -77,10 +82,30 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ),
                       elevation: 3,
                     ),
+                    onPressed: () {
+                      // To see Buy Coins
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => BuyCoinsScreen()),
+                      );
+                    },
+                    child: Center(
+                      child: Text("Buy Coins", style: TextStyle(fontSize: 20)),
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadiusGeometry.circular(10),
+                      ),
+                      elevation: 3,
+                    ),
                     onPressed: () {},
                     child: Center(
                       child: Text(
-                        "Transactions",
+                        "Help & Support",
                         style: TextStyle(fontSize: 20),
                       ),
                     ),
@@ -101,11 +126,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       elevation: 3,
                     ),
                     onPressed: () async {
-                      await authRepo.signOut();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => SendOTPScreen()),
-                      );
+                      try {
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(currentUser.uid)
+                            .update({"isOnline": false});
+                        await authRepo.signOut();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => SendOTPScreen()),
+                        );
+                      } catch (e) {}
                     },
                     child: Center(
                       child: Text("Logout", style: TextStyle(fontSize: 20)),

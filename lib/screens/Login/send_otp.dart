@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/verify_otp.dart';
-import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
 
 class SendOTPScreen extends ConsumerStatefulWidget {
   const SendOTPScreen({super.key});
@@ -24,9 +23,11 @@ class _LoginScreenState extends ConsumerState<SendOTPScreen> {
     super.dispose();
   }
 
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
-    final isLoading = ref.watch(isLoadingProvider);
+    // final isLoading = ref.watch(isLoadingProvider);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
@@ -102,63 +103,48 @@ class _LoginScreenState extends ConsumerState<SendOTPScreen> {
                               borderRadius: BorderRadius.circular(12.r),
                             ),
                           ),
-                          onPressed: isLoading
-                              ? null
-                              : () async {
-                                  // To send OTP
-                                  if (_formKey.currentState!.validate()) {
-                                    final phone =
-                                        "+91${_phoneNumberController.text.trim()}";
-                                    final sendOTPProvider = ref.read(
-                                      authRepositoryProvider,
-                                    );
-                                    ref.read(isLoadingProvider.notifier).state =
-                                        true;
+                          onPressed: () async {
+                            // To send OTP
+                            if (_formKey.currentState!.validate()) {
+                              final phone =
+                                  "+91${_phoneNumberController.text.trim()}";
+                              final sendOTPProvider = ref.read(
+                                authRepositoryProvider,
+                              );
+                              setState(() {
+                                isLoading = true;
+                              });
 
-                                    try {
-                                      await sendOTPProvider.sendOTP(
-                                        phoneNumber: phone,
-                                        codeSent:
-                                            (verificationId, resendToken) {
-                                              ScaffoldMessenger.of(
-                                                context,
-                                              ).showSnackBar(
-                                                SnackBar(
-                                                  content: Text("OTP Sent"),
-                                                ),
-                                              );
-                                              // Navigate to Verify screen
-                                              Navigator.pushReplacement(
-                                                context,
-                                                PageTransition(
-                                                  child: VerifyOTPScreen(),
-                                                  type: PageTransitionType
-                                                      .rightToLeft,
-                                                ),
-                                              );
-                                              ref
-                                                      .read(
-                                                        isLoadingProvider
-                                                            .notifier,
-                                                      )
-                                                      .state =
-                                                  false;
-                                            },
-                                      );
-                                    } catch (e) {
-                                      ScaffoldMessenger.of(
-                                        context,
-                                      ).showSnackBar(
-                                        SnackBar(content: Text("Error: $e")),
-                                      );
-                                    } finally {
-                                      ref
-                                              .read(isLoadingProvider.notifier)
-                                              .state =
-                                          false;
-                                    }
-                                  }
-                                },
+                              try {
+                                await sendOTPProvider.sendOTP(
+                                  phoneNumber: phone,
+                                  codeSent: (verificationId, resendToken) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text("OTP Sent")),
+                                    );
+                                    setState(() {
+                                      isLoading = false;
+                                    });
+                                    // Navigate to Verify screen
+                                    Navigator.pushReplacement(
+                                      context,
+                                      PageTransition(
+                                        child: VerifyOTPScreen(),
+                                        type: PageTransitionType.rightToLeft,
+                                      ),
+                                    );
+                                  },
+                                );
+                              } catch (e) {
+                                setState(() {
+                                  isLoading = false;
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("Error: $e")),
+                                );
+                              }
+                            }
+                          },
                           child: isLoading
                               ? Center(
                                   child: CircularProgressIndicator(

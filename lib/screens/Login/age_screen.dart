@@ -46,7 +46,7 @@ class _AgeScreenState extends ConsumerState<AgeScreen> {
       );
       return;
     }
-    final useruid = await FirebaseAuth.instance.currentUser!.uid;
+    final useruid = FirebaseAuth.instance.currentUser!.uid;
 
     try {
       await FirebaseFirestore.instance.collection('users').doc(useruid).set({

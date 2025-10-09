@@ -1,9 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class PermissionWaitingScreen extends StatelessWidget {
+class PermissionWaitingScreen extends ConsumerStatefulWidget {
   const PermissionWaitingScreen({super.key});
 
+  @override
+  ConsumerState<PermissionWaitingScreen> createState() =>
+      _PermissionWaitingScreenState();
+}
+
+class _PermissionWaitingScreenState
+    extends ConsumerState<PermissionWaitingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

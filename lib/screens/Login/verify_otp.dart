@@ -1,14 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
-import 'package:zee_goo/screens/Login/gender_screen.dart';
 import 'package:zee_goo/screens/Login/select_languages_screen.dart';
-import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
 import 'package:zee_goo/screens/home/m_screen.dart';
 
 class VerifyOTPScreen extends ConsumerStatefulWidget {
@@ -149,8 +146,6 @@ class _LoginScreenState extends ConsumerState<VerifyOTPScreen> {
                                     ),
                                   );
                                 }
-
-                                // Navigate to Gender Select screen
                               } catch (e) {
                                 ref.read(isLoadingProvider.notifier).state =
                                     false;

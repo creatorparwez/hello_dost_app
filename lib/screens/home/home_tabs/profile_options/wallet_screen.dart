@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
+import 'package:zee_goo/screens/home/home_tabs/profile_options/buy_coins_screen.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -35,10 +36,10 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
               height: 200.h,
               width: 1.sw,
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.deepOrange, Colors.blueAccent, Colors.blue],
+                gradient: const LinearGradient(
+                  colors: [Colors.blue, Color.fromARGB(255, 116, 5, 219)],
                 ),
-                color: Colors.deepOrange,
+
                 borderRadius: BorderRadius.circular(20.sp),
               ),
               child: Padding(
@@ -65,7 +66,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                               height: 38.h,
                               width: 38.w,
                             ),
-                            SizedBox(width: 15.w),
+                            SizedBox(width: 10.w),
                             Consumer(
                               builder: (context, ref, _) {
                                 final userData = ref.watch(
@@ -74,7 +75,7 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                                 return userData.when(
                                   data: (data) {
                                     return Text(
-                                      data.balance.toString(),
+                                      data.balance.toStringAsFixed(2),
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 35.sp,
@@ -103,6 +104,12 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                             ),
                             onPressed: () {
                               // Buy Coins
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => BuyCoinsScreen(),
+                                ),
+                              );
                             },
                             child: Padding(
                               padding: EdgeInsets.symmetric(horizontal: 10.w),

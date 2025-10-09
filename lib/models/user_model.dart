@@ -2,17 +2,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
   final String uid;
-  final String userId; // new
+  final String userId;
   final String name;
   final String email;
   final String? gender;
   final int? age;
   final List<String>? interests;
-  final List<String>? languages; // new
-  final int balance;
+  final List<String>? languages;
+  final double balance;
   final DateTime createdAt;
-  final bool permission; // <-- NEW FIELD
+  final bool permission;
   final bool isOnline;
+  final bool isAdmin;
 
   UserModel({
     required this.uid,
@@ -23,13 +24,14 @@ class UserModel {
     this.age,
     this.interests,
     this.languages,
-    this.balance = 100,
-    required this.createdAt,
-    this.permission = false, // default false
+    this.balance = 100.0,
+    DateTime? createdAt,
+    this.permission = false,
     this.isOnline = false,
-  });
+    this.isAdmin = false,
+  }) : createdAt = createdAt ?? DateTime.now();
 
-  // From Firestore
+  // 🔹 Convert Firestore map → UserModel
   factory UserModel.fromMap(Map<String, dynamic> map, String id) {
     return UserModel(
       uid: id,
@@ -44,14 +46,21 @@ class UserModel {
       languages: map['languages'] != null
           ? List<String>.from(map['languages'])
           : [],
-      balance: map['balance'] ?? 100,
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-      permission: map['permission'] ?? false, // <-- NEW
+      balance: map['balance'] != null
+          ? (map['balance'] is int
+                ? (map['balance'] as int).toDouble()
+                : map['balance'])
+          : 100.0,
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as Timestamp).toDate()
+          : DateTime.now(),
+      permission: map['permission'] ?? false,
       isOnline: map['isOnline'] ?? false,
+      isAdmin: map['isAdmin'] ?? false,
     );
   }
 
-  // To Firestore
+  // 🔹 Convert UserModel → Firestore map
   Map<String, dynamic> toMap() {
     return {
       "uid": uid,
@@ -64,8 +73,39 @@ class UserModel {
       "languages": languages,
       "balance": balance,
       "createdAt": createdAt,
-      "permission": permission, // <-- NEW
+      "permission": permission,
       "isOnline": isOnline,
+      "isAdmin": isAdmin,
     };
+  }
+
+  // 🔹 CopyWith method (for easy updates)
+  UserModel copyWith({
+    String? name,
+    String? email,
+    String? gender,
+    int? age,
+    List<String>? interests,
+    List<String>? languages,
+    double? balance,
+    bool? permission,
+    bool? isOnline,
+    bool? isAdmin,
+  }) {
+    return UserModel(
+      uid: uid,
+      userId: userId,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      gender: gender ?? this.gender,
+      age: age ?? this.age,
+      interests: interests ?? this.interests,
+      languages: languages ?? this.languages,
+      balance: balance ?? this.balance,
+      createdAt: createdAt,
+      permission: permission ?? this.permission,
+      isOnline: isOnline ?? this.isOnline,
+      isAdmin: isAdmin ?? this.isAdmin,
+    );
   }
 }

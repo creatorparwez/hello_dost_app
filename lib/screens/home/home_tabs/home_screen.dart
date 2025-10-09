@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
-import 'package:zee_goo/repository/call_service.dart';
-import 'package:zee_goo/screens/Login/send_otp.dart';
+import 'package:zee_goo/repository/send_call.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -46,7 +44,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
                 return Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: 20.w,
+                    horizontal: 15.w,
                     vertical: 3.h,
                   ),
                   child: Card(
@@ -71,6 +69,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         _buildInterestsSection(data: data),
 
                         SizedBox(height: 8.h),
+                        // Voice and Video Section
                         currentUserData.when(
                           data: (datass) {
                             return Padding(
@@ -78,7 +77,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ////
+                                  // Voice call
                                   Expanded(
                                     child: TextButton(
                                       style: TextButton.styleFrom(
@@ -105,6 +104,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             isVideo: false,
                                             receiverId: data.uid,
                                             receiverName: data.name,
+                                            ref: ref,
+                                            context: context,
                                           );
                                         }
                                       },
@@ -142,6 +143,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     ),
                                   ),
                                   SizedBox(width: 20.w),
+                                  // Video Call
                                   Expanded(
                                     child: TextButton(
                                       style: TextButton.styleFrom(
@@ -168,6 +170,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             isVideo: true,
                                             receiverId: data.uid,
                                             receiverName: data.name,
+                                            ref: ref,
+                                            context: context,
                                           );
                                         }
                                       },
@@ -224,11 +228,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
     );
   }
+
+  //
 }
 
 // Image
 class _buildImageSection extends StatelessWidget {
-  const _buildImageSection({super.key, required this.data});
+  const _buildImageSection({required this.data});
 
   final UserModel data;
 
@@ -256,7 +262,7 @@ class _buildImageSection extends StatelessWidget {
 // Name
 
 class _buildNameSection extends StatelessWidget {
-  const _buildNameSection({super.key, required this.data});
+  const _buildNameSection({required this.data});
 
   final UserModel data;
 
@@ -274,7 +280,7 @@ class _buildNameSection extends StatelessWidget {
 
 // Languages
 class _buildLanguagesSection extends StatelessWidget {
-  const _buildLanguagesSection({super.key, required this.data});
+  const _buildLanguagesSection({required this.data});
 
   final UserModel data;
 
@@ -297,7 +303,7 @@ class _buildLanguagesSection extends StatelessWidget {
 
 // Interests
 class _buildInterestsSection extends StatelessWidget {
-  const _buildInterestsSection({super.key, required this.data});
+  const _buildInterestsSection({required this.data});
 
   final UserModel data;
 

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:zee_goo/models/calls_model.dart';
 import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/repository/auth_repository.dart';
 import 'package:zee_goo/repository/users_repository.dart';
@@ -51,17 +51,17 @@ final userDataProvider = StreamProvider.family<UserModel, String>((
   return repo.getUserDataById(userId);
 });
 
-// // StreamProvider for all users
-// final allUserProvider = StreamProvider<List<UserModel>>((ref) {
-//   return _db
-//       .collection("users")
-//       .snapshots()
-//       .map((snapshot) {
-//         return snapshot.docs
-//             .map((doc) => UserModel.fromMap(doc.data(), doc.id))
-//             .toList();
-//       })
-//       .handleError((error) {
-//         print("Firestore error: $error");
-//       });
-// });
+// To get Admin data
+final adminDataProvider = StreamProvider<UserModel?>((ref) {
+  final repo = ref.watch(usersRepositoryProvider);
+  return repo.getAdminData();
+});
+
+// To get User Calls History by their Id
+final callsHistoryProvider = StreamProvider.family<List<CallsModel>, String>((
+  ref,
+  userId,
+) {
+  final repo = ref.watch((usersRepositoryProvider));
+  return repo.getCallsHistoryByUserId(userId);
+});

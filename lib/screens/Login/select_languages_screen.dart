@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
-import 'package:zee_goo/screens/Login/gender_screen.dart';
-import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
+import 'package:zee_goo/screens/Login/name_screen.dart';
 
 class SelectLanguagesScreen extends ConsumerStatefulWidget {
   const SelectLanguagesScreen({super.key});
@@ -38,7 +37,7 @@ class _SelectLanguagesScreenState extends ConsumerState<SelectLanguagesScreen> {
       return;
     }
 
-    final useruid = await FirebaseAuth.instance.currentUser!.uid;
+    final useruid = FirebaseAuth.instance.currentUser!.uid;
 
     try {
       await FirebaseFirestore.instance.collection('users').doc(useruid).set({
@@ -46,7 +45,7 @@ class _SelectLanguagesScreenState extends ConsumerState<SelectLanguagesScreen> {
       }, SetOptions(merge: true));
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const GenderScreen()),
+        MaterialPageRoute(builder: (_) => const NameScreen()),
       );
       ref.read(isLoadingProvider.notifier).state = false;
     } catch (e) {

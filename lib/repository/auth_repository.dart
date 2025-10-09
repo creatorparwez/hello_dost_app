@@ -5,46 +5,6 @@ class AuthRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // With Email and Password
-  // For Sign up User
-  Future<User?> signupUser(String name, String email, String password) async {
-    try {
-      UserCredential userCredential = await _auth
-          .createUserWithEmailAndPassword(email: email, password: password);
-
-      final user = userCredential.user;
-      if (user != null) {
-        await _firestore.collection('users').doc(user.uid).set({
-          "uid": user.uid,
-          "name": name,
-          "email": email,
-          "gender": "",
-          "age": null,
-          "interests": [],
-          "balance": 0, // default, will update later
-          "createdAt": FieldValue.serverTimestamp(),
-        });
-      }
-      return user;
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
-    }
-  }
-
-  // To Login or Sign in user
-  Future<User?> loginUser(String email, String password) async {
-    try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-
-      return userCredential.user;
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message);
-    }
-  }
-
   // To Login with Phone Number
   String? _verificationId;
 
@@ -88,12 +48,16 @@ class AuthRepository {
       final user = userCredential.user;
 
       if (user != null) {
-        final userDoc = await _firestore
-            .collection("users")
-            .doc(user.uid)
-            .get();
-
-        if (!userDoc.exists) {
+        final userDocRef = _firestore.collection("users").doc(user.uid);
+        final userDoc = await userDocRef.get();
+        if (userDoc.exists) {
+          // ✅ User already exists → set isOnline to true
+          await userDocRef.update({
+            "isOnline": true,
+            "name":
+                name ?? userDoc.data()?['name'] ?? "", // optionally update name
+          });
+        } else {
           await _firestore.collection("users").doc(user.uid).set({
             "uid": user.uid,
             "UserId": "",
