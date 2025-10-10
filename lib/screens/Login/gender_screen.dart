@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/age_screen.dart';
-import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
 import 'package:zee_goo/screens/home/m_screen.dart';
 
 class GenderScreen extends ConsumerWidget {

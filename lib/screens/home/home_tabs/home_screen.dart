@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/repository/send_call.dart';
@@ -19,6 +20,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser;
     final currentUserData = ref.watch(userDataProvider(currentUserId!.uid));
+
     return Consumer(
       builder: (context, ref, _) {
         final allUsers = ref.watch(allUsersProvider);
@@ -69,148 +71,157 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         _buildInterestsSection(data: data),
 
                         SizedBox(height: 8.h),
+
                         // Voice and Video Section
                         currentUserData.when(
                           data: (datass) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 15.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  // Voice call
-                                  Expanded(
-                                    child: TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.blue,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10.r,
-                                          ),
-                                        ),
-                                      ),
-                                      onPressed: () {
-                                        if (datass.balance < 20) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                "Insufficient coins! Please add coins to make call.",
+                            return datass.gender == "Female"
+                                ? SizedBox.shrink()
+                                : Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 15.w,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        // Voice call
+                                        Expanded(
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: Colors.blue,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
                                               ),
                                             ),
-                                          );
-                                        } else {
-                                          sendCall(
-                                            isVideo: false,
-                                            receiverId: data.uid,
-                                            receiverName: data.name,
-                                            ref: ref,
-                                            context: context,
-                                          );
-                                        }
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/dollar.png',
-                                            height: 20.h,
-                                            width: 20.w,
-                                          ),
-                                          SizedBox(width: 8.w),
-                                          Text(
-                                            "20",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
+                                            onPressed: () {
+                                              if (datass.balance <
+                                                  AppConstants
+                                                      .voiceCallRatePerSecond) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      "Insufficient coins! Please add coins to make call.",
+                                                    ),
+                                                  ),
+                                                );
+                                              } else {
+                                                sendCall(
+                                                  isVideo: false,
+                                                  receiverId: data.uid,
+                                                  receiverName: data.name,
+                                                  ref: ref,
+                                                  context: context,
+                                                );
+                                              }
+                                            },
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/dollar.png',
+                                                  height: 20.h,
+                                                  width: 20.w,
+                                                ),
+                                                SizedBox(width: 8.w),
+                                                Text(
+                                                  "20",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "/min",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 20.w),
+                                                Icon(
+                                                  Iconsax.call5,
+                                                  color: Colors.white,
+                                                  size: 25.sp,
+                                                ),
+                                              ],
                                             ),
-                                          ),
-                                          Text(
-                                            "/min",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          SizedBox(width: 20.w),
-                                          Icon(
-                                            Iconsax.call5,
-                                            color: Colors.white,
-                                            size: 25.sp,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 20.w),
-                                  // Video Call
-                                  Expanded(
-                                    child: TextButton(
-                                      style: TextButton.styleFrom(
-                                        backgroundColor: Colors.deepOrange,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(
-                                            10.r,
                                           ),
                                         ),
-                                      ),
-                                      onPressed: () {
-                                        if (datass.balance < 60) {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                "Insufficient coins! Please add coins to make call.",
+                                        SizedBox(width: 20.w),
+                                        // Video Call
+                                        Expanded(
+                                          child: TextButton(
+                                            style: TextButton.styleFrom(
+                                              backgroundColor:
+                                                  Colors.deepOrange,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.r),
                                               ),
                                             ),
-                                          );
-                                        } else {
-                                          sendCall(
-                                            isVideo: true,
-                                            receiverId: data.uid,
-                                            receiverName: data.name,
-                                            ref: ref,
-                                            context: context,
-                                          );
-                                        }
-                                      },
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/dollar.png',
-                                            height: 20.h,
-                                            width: 20.w,
-                                          ),
-                                          SizedBox(width: 8.w),
-                                          Text(
-                                            "60",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.bold,
+                                            onPressed: () {
+                                              if (datass.balance <
+                                                  AppConstants
+                                                      .videoCallRatePerSecond) {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                      "Insufficient coins! Please add coins to make call.",
+                                                    ),
+                                                  ),
+                                                );
+                                              } else {
+                                                sendCall(
+                                                  isVideo: true,
+                                                  receiverId: data.uid,
+                                                  receiverName: data.name,
+                                                  ref: ref,
+                                                  context: context,
+                                                );
+                                              }
+                                            },
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Image.asset(
+                                                  'assets/images/dollar.png',
+                                                  height: 20.h,
+                                                  width: 20.w,
+                                                ),
+                                                SizedBox(width: 8.w),
+                                                Text(
+                                                  "60",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "/min",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                SizedBox(width: 20.w),
+                                                Icon(
+                                                  Iconsax.video5,
+                                                  color: Colors.white,
+                                                  size: 25.sp,
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                          Text(
-                                            "/min",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          SizedBox(width: 20.w),
-                                          Icon(
-                                            Iconsax.video5,
-                                            color: Colors.white,
-                                            size: 25.sp,
-                                          ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            );
+                                  );
                           },
                           error: (error, stackTrace) => Text(error.toString()),
                           loading: () =>

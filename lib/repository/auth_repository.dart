@@ -67,7 +67,7 @@ class AuthRepository {
             "age": null,
             "interests": [],
             "languages": [],
-            "balance": 0,
+            "balance": 100,
             "permission": false,
             "isOnline": false,
             "createdAt": FieldValue.serverTimestamp(),

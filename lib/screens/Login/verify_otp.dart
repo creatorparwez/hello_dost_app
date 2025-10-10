@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
+import 'package:zee_goo/repository/zego_services.dart';
 import 'package:zee_goo/screens/Login/select_languages_screen.dart';
 import 'package:zee_goo/screens/home/m_screen.dart';
 
@@ -22,7 +23,6 @@ class _LoginScreenState extends ConsumerState<VerifyOTPScreen> {
   @override
   void dispose() {
     _otpController.dispose();
-
     super.dispose();
   }
 
@@ -127,6 +127,16 @@ class _LoginScreenState extends ConsumerState<VerifyOTPScreen> {
                                   userDoc.data()!,
                                   userDoc.id,
                                 );
+
+                                if (userData.name.isNotEmpty) {
+                                  await ZegoServices.requestPermissions();
+                                  // // ✅ Initialize Zego for first-time user
+                                  await ZegoServices.initZego(
+                                    user.uid,
+                                    userData.name,
+                                  );
+                                }
+
                                 if (userData.languages != null &&
                                     userData.languages!.isNotEmpty) {
                                   // User has selected languages → go to home screen

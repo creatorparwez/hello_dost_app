@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:zee_goo/screens/home/m_screen.dart';
 
 class PermissionWaitingScreen extends ConsumerStatefulWidget {
   const PermissionWaitingScreen({super.key});
@@ -12,6 +15,26 @@ class PermissionWaitingScreen extends ConsumerStatefulWidget {
 
 class _PermissionWaitingScreenState
     extends ConsumerState<PermissionWaitingScreen> {
+  // Approved User
+  Future<void> updateUserPermission() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser == null) return;
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(currentUser.uid)
+          .update({"permission": true});
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => MScreen()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error : $e")));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,6 +85,32 @@ class _PermissionWaitingScreenState
                   fontSize: 16.sp,
                   fontStyle: FontStyle.italic,
                   color: Colors.black45,
+                ),
+              ),
+              SizedBox(height: 20.h),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  elevation: 4,
+                  shadowColor: Colors.deepOrange,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(13.r),
+                  ),
+                ),
+                onPressed: () {
+                  // Approved User Login Manually
+                  updateUserPermission();
+                },
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Text(
+                    "Approved User",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 20.sp,
+                    ),
+                  ),
                 ),
               ),
             ],

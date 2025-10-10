@@ -4,16 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:zee_goo/constants/app_constants.dart';
-import 'package:zee_goo/main.dart';
-import 'package:zee_goo/repository/send_call.dart';
+import 'package:zee_goo/repository/zego_services.dart';
 import 'package:zee_goo/screens/Login/permission_waiting_screen.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
-import 'package:zee_goo/screens/home/call/call_screen.dart';
 import 'package:zee_goo/screens/home/m_screen.dart';
-import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 class Splashscreen extends ConsumerStatefulWidget {
   const Splashscreen({super.key});
@@ -46,10 +41,13 @@ class _SplashscreenState extends ConsumerState<Splashscreen> {
         final gender = data?['gender'] ?? '';
         final permission = data?['permission'] ?? false;
         final userName = data?['name'] ?? 'Guest';
+
         // ✅ Request permissions first
-        await _requestPermissions();
-        // Initialize Zego for this user
-        await _initZego(user.uid, userName);
+        await ZegoServices.requestPermissions();
+
+        // ✅ Initialize Zego for this user
+        await ZegoServices.initZego(user.uid, userName);
+
         if (gender.toLowerCase() == 'female') {
           // Female → check permission
           if (permission) {
@@ -65,9 +63,7 @@ class _SplashscreenState extends ConsumerState<Splashscreen> {
           } else {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                builder: (_) => const PermissionWaitingScreen(),
-              ),
+              MaterialPageRoute(builder: (_) => PermissionWaitingScreen()),
             );
           }
         } else {
@@ -89,54 +85,6 @@ class _SplashscreenState extends ConsumerState<Splashscreen> {
         );
       }
     });
-  }
-
-  // To initialize Zego
-  Future<void> _initZego(String userId, String userName) async {
-    ZegoUIKitPrebuiltCallInvitationService().setNavigatorKey(navigatorKey);
-
-    await ZegoUIKitPrebuiltCallInvitationService().init(
-      appID: AppConstants.AAPID,
-      appSign: AppConstants.AAPSIGN,
-      userID: userId,
-      userName: userName,
-      plugins: [ZegoUIKitSignalingPlugin()],
-      requireConfig: (ZegoCallInvitationData data) {
-        return data.type == ZegoCallInvitationType.videoCall
-            ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
-            : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
-      },
-      invitationEvents: ZegoUIKitPrebuiltCallInvitationEvents(
-        onOutgoingCallAccepted: (callID, callee) {
-          debugPrint("Call accepted by ${callee.name}");
-          // Get call type from map
-          final isVideo = ongoingCalls[callID] ?? false;
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            navigatorKey.currentState?.push(
-              MaterialPageRoute(
-                builder: (_) => CallScreen(
-                  callerId: userId,
-                  receiverId: callee.id,
-                  receiverName: callee.name,
-                  callerName: userName,
-                  callID: callID,
-                  isVideo: isVideo,
-                ),
-              ),
-            );
-          });
-        },
-      ),
-    );
-  }
-
-  Future<void> _requestPermissions() async {
-    await [
-      Permission.camera,
-      Permission.microphone,
-      Permission.notification,
-    ].request();
   }
 
   @override

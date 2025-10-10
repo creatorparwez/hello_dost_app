@@ -31,12 +31,13 @@ class CallScreen extends StatefulWidget {
 
 class _CallScreenState extends State<CallScreen> {
   final CoinDeductionService _coinService = CoinDeductionService();
-  bool _isCallEnded = false;
+
+  bool _isHangingUp = false;
+  bool _isSavingCallHistory = false;
 
   @override
   void initState() {
     super.initState();
-
     // Start per-second coin deduction
     _coinService.start(
       callerId: widget.callerId,
@@ -48,19 +49,49 @@ class _CallScreenState extends State<CallScreen> {
 
   /// Called when caller runs out of balance
   void _handleBalanceZero() {
-    if (!mounted || _isCallEnded) return;
-    debugPrint("Balance zero - ending call");
-    _safeEndCall();
-    // Force navigation back
-    if (mounted && Navigator.canPop(context)) {
-      Navigator.of(context).pop();
-    }
+    if (!mounted || _isHangingUp) return;
+    debugPrint("⚠️ Balance zero - ending call");
+
+    // Mark as hanging up to prevent duplicate hangup calls
+    _isHangingUp = true;
+
+    // Schedule immediate execution after current frame to avoid setState errors
+    Future.microtask(() async {
+      if (!mounted) return;
+
+      debugPrint("🔴 Saving call data due to zero balance");
+
+      // Save call data immediately (with timeout protection)
+      await _safeEndCall();
+
+      // Force close all screens aggressively
+      if (mounted) {
+        // Use popUntil to go back to home screen
+        try {
+          debugPrint("🔴 Force closing to home screen");
+          Navigator.of(context).popUntil((route) => route.isFirst);
+          debugPrint("✅ Successfully returned to home");
+        } catch (e) {
+          debugPrint("⚠️ Error with popUntil, trying manual pops: $e");
+          // Fallback: manual pops
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            int poppedScreens = 0;
+            while (mounted && Navigator.canPop(context) && poppedScreens < 5) {
+              Navigator.of(context).pop();
+              poppedScreens++;
+              debugPrint("✅ Popped screen $poppedScreens");
+            }
+          });
+        }
+      }
+    });
   }
 
   /// Stop coin deduction and save call history
   Future<void> _safeEndCall() async {
-    if (_isCallEnded) return;
-    _isCallEnded = true;
+    if (_isSavingCallHistory) return;
+    _isSavingCallHistory = true;
 
     try {
       final summary = await _coinService.stopAndSave(
@@ -86,28 +117,114 @@ class _CallScreenState extends State<CallScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ZegoUIKitPrebuiltCall(
-        appID: AppConstants.AAPID,
-        appSign: AppConstants.AAPSIGN,
-        userID: widget.callerId,
-        userName: widget.callerName,
-        callID: widget.callID,
-        config: widget.isVideo
-            ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
-            : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall(),
-        events: ZegoUIKitPrebuiltCallEvents(
-          onCallEnd: (ZegoCallEndEvent event, VoidCallback defaultAction) {
-            debugPrint("Call ended with reason: ${event.reason}");
-            // Save call history and stop coin deduction
-            _safeEndCall();
-            // Call default action for cleanup
-            defaultAction.call();
-            // Navigate back when call ends
-            if (mounted && Navigator.canPop(context)) {
-              Navigator.of(context).pop();
-            }
-          },
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) {
+          // Ensure cleanup when back button is pressed
+          await _safeEndCall();
+        }
+      },
+      child: SafeArea(
+        child: ZegoUIKitPrebuiltCall(
+          appID: AppConstants.AAPID,
+          appSign: AppConstants.AAPSIGN,
+          userID: widget.callerId,
+          userName: widget.callerName,
+          callID: widget.callID,
+          config: widget.isVideo
+              ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+              : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall(),
+          events: ZegoUIKitPrebuiltCallEvents(
+            onCallEnd:
+                (ZegoCallEndEvent event, VoidCallback defaultAction) async {
+              debugPrint("📞 Call ended with reason: ${event.reason}");
+
+              // Capture navigator before async operations
+              final navigator = Navigator.of(context);
+
+              // Save call history and stop coin deduction
+              await _safeEndCall();
+
+              // Call default action for cleanup
+              defaultAction.call();
+
+              // Navigate back when call ends - pop ALL screens to home
+              if (mounted) {
+                debugPrint("🔴 Normal call end - returning to home");
+                debugPrint("📊 Can pop? ${navigator.canPop()}");
+
+                try {
+                  // Count routes before popping
+                  int routeCount = 0;
+                  navigator.popUntil((route) {
+                    routeCount++;
+                    debugPrint(
+                        "📍 Route $routeCount: ${route.settings.name ?? 'unnamed'}, isFirst: ${route.isFirst}");
+                    return route.isFirst;
+                  });
+                  debugPrint(
+                      "✅ Popped $routeCount routes, returned to home after call");
+                } catch (e) {
+                  debugPrint("⚠️ Error with popUntil: $e");
+                  // Fallback: manual pops
+                  int poppedScreens = 0;
+                  while (mounted && navigator.canPop() && poppedScreens < 5) {
+                    navigator.pop();
+                    poppedScreens++;
+                    debugPrint("✅ Manual pop $poppedScreens");
+                  }
+                }
+              }
+            },
+            user: ZegoCallUserEvents(
+              onLeave: (user) {
+                // When remote user leaves the call
+                debugPrint("👋 User left the call: ${user.name}");
+
+                if (!mounted || _isHangingUp) return;
+
+                debugPrint(
+                    "⚠️ Remote user disconnected - ending call for caller");
+
+                // Mark as hanging up to prevent duplicate calls
+                _isHangingUp = true;
+
+                // Capture context and navigator BEFORE any async operations
+                final capturedContext = context;
+                final navigator = Navigator.of(capturedContext);
+
+                // Handle cleanup and navigation immediately
+                Future.microtask(() async {
+                  if (!mounted) return;
+
+                  debugPrint("🔴 Saving call data after remote user left");
+
+                  // Save call history and stop coin deduction
+                  await _safeEndCall();
+
+                  // Navigate back to home screen
+                  if (mounted && navigator.canPop()) {
+                    debugPrint("🔴 Remote user left - returning to home");
+
+                    try {
+                      // Pop all screens to return to home
+                      navigator.popUntil((route) => route.isFirst);
+                      debugPrint("✅ Successfully returned to home after remote user left");
+                    } catch (e) {
+                      debugPrint("⚠️ Error with popUntil: $e");
+                      // Fallback: manual pops
+                      int poppedScreens = 0;
+                      while (mounted && navigator.canPop() && poppedScreens < 5) {
+                        navigator.pop();
+                        poppedScreens++;
+                        debugPrint("✅ Manual pop $poppedScreens");
+                      }
+                    }
+                  }
+                });
+              },
+            ),
+          ),
         ),
       ),
     );

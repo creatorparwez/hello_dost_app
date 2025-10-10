@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/permission_waiting_screen.dart';
-import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
+
 import 'package:zee_goo/screens/home/m_screen.dart';
 
 class AgeScreen extends ConsumerStatefulWidget {
@@ -100,8 +101,10 @@ class _AgeScreenState extends ConsumerState<AgeScreen> {
           children: [
             TextFormField(
               controller: _ageController,
+
               decoration: InputDecoration(
-                hintText: "Enter Age",
+                prefixIcon: Icon(Iconsax.user),
+                hintText: "Enter Your Age",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(17.r),
                 ),
@@ -172,7 +175,6 @@ class _AgeScreenState extends ConsumerState<AgeScreen> {
                 backgroundColor: Colors.deepOrange,
               ),
               onPressed: () async {
-                // Navigate to Home Screen
                 await saveAge(context, ref);
               },
               child: Center(

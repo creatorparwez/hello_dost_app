@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
+import 'package:zee_goo/repository/zego_services.dart';
 import 'package:zee_goo/screens/Login/gender_screen.dart';
 
 class NameScreen extends ConsumerStatefulWidget {
@@ -67,7 +69,6 @@ class _NameScreenState extends ConsumerState<NameScreen> {
                 ),
               ),
             ),
-
             SizedBox(height: 30.h),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -76,6 +77,20 @@ class _NameScreenState extends ConsumerState<NameScreen> {
               onPressed: () async {
                 // To save user Name
                 await saveName(context, ref);
+
+                final currentUser = FirebaseAuth.instance.currentUser;
+                if (currentUser == null) {
+                  throw Exception("User not found after OTP verification");
+                }
+                final userDoc = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(currentUser.uid)
+                    .get();
+
+                final userData = UserModel.fromMap(userDoc.data()!, userDoc.id);
+                await ZegoServices.requestPermissions();
+                // // ✅ Initialize Zego for first-time user
+                await ZegoServices.initZego(currentUser.uid, userData.name);
               },
               child: Center(
                 child: loading
