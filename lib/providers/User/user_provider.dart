@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:zee_goo/models/call_history_model.dart';
 import 'package:zee_goo/models/calls_model.dart';
 import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/repository/auth_repository.dart';
@@ -57,7 +58,13 @@ final adminDataProvider = StreamProvider<UserModel?>((ref) {
   return repo.getAdminData();
 });
 
-// To get User Calls History by their Id
+// To get All Calls (Entire Calls)
+final allCallHistoryProvider = StreamProvider<List<CallHistoryModel>>((ref) {
+  final repo = ref.read(usersRepositoryProvider);
+  return repo.getAllCalls();
+});
+
+// To get User Calls History by their Id (Only calls of particular User)
 final callsHistoryProvider = StreamProvider.family<List<CallsModel>, String>((
   ref,
   userId,

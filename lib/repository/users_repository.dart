@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:zee_goo/models/call_history_model.dart';
 import 'package:zee_goo/models/calls_model.dart';
 import 'package:zee_goo/models/user_model.dart';
 
@@ -25,6 +26,15 @@ class UsersRepository {
       } else {
         throw Exception("User not found");
       }
+    });
+  }
+
+  // Get All Calls
+  Stream<List<CallHistoryModel>> getAllCalls() {
+    return _firestore.collection('call_history').snapshots().map((snapshot) {
+      return snapshot.docs
+          .map((doc) => CallHistoryModel.fromMap(doc.data(), doc.id))
+          .toList();
     });
   }
 

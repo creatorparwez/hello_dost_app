@@ -4,11 +4,12 @@ class UserModel {
   final String uid;
   final String userId;
   final String name;
-  final String email;
+  final String? email;
+  final String? phone;
   final String? gender;
   final int? age;
-  final List<String>? interests;
-  final List<String>? languages;
+  final List<String> interests;
+  final List<String> languages;
   final double balance;
   final DateTime createdAt;
   final bool permission;
@@ -19,11 +20,12 @@ class UserModel {
     required this.uid,
     this.userId = "",
     required this.name,
-    required this.email,
+    this.email,
+    this.phone,
     this.gender,
     this.age,
-    this.interests,
-    this.languages,
+    this.interests = const [],
+    this.languages = const [],
     this.balance = 100.0,
     DateTime? createdAt,
     this.permission = false,
@@ -31,15 +33,16 @@ class UserModel {
     this.isAdmin = false,
   }) : createdAt = createdAt ?? DateTime.now();
 
-  // 🔹 Convert Firestore map → UserModel
+  /// 🔹 Convert Firestore map → UserModel
   factory UserModel.fromMap(Map<String, dynamic> map, String id) {
     return UserModel(
       uid: id,
       userId: map['UserId'] ?? "",
       name: map['name'] ?? '',
-      email: map['email'] ?? '',
+      email: map['email'],
+      phone: map['phone'],
       gender: map['gender'],
-      age: map['age'],
+      age: map['age'] is int ? map['age'] : null,
       interests: map['interests'] != null
           ? List<String>.from(map['interests'])
           : [],
@@ -51,7 +54,7 @@ class UserModel {
                 ? (map['balance'] as int).toDouble()
                 : map['balance'])
           : 100.0,
-      createdAt: map['createdAt'] != null
+      createdAt: map['createdAt'] is Timestamp
           ? (map['createdAt'] as Timestamp).toDate()
           : DateTime.now(),
       permission: map['permission'] ?? false,
@@ -60,13 +63,14 @@ class UserModel {
     );
   }
 
-  // 🔹 Convert UserModel → Firestore map
+  /// 🔹 Convert UserModel → Firestore map
   Map<String, dynamic> toMap() {
     return {
       "uid": uid,
       "UserId": userId,
       "name": name,
       "email": email,
+      "phone": phone,
       "gender": gender,
       "age": age,
       "interests": interests,
@@ -79,10 +83,11 @@ class UserModel {
     };
   }
 
-  // 🔹 CopyWith method (for easy updates)
+  /// 🔹 CopyWith method for updates
   UserModel copyWith({
     String? name,
     String? email,
+    String? phone,
     String? gender,
     int? age,
     List<String>? interests,
@@ -97,6 +102,7 @@ class UserModel {
       userId: userId,
       name: name ?? this.name,
       email: email ?? this.email,
+      phone: phone ?? this.phone,
       gender: gender ?? this.gender,
       age: age ?? this.age,
       interests: interests ?? this.interests,
