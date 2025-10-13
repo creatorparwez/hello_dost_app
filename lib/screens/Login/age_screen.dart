@@ -5,12 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
+import 'package:zee_goo/screens/Login/name_screen.dart';
 import 'package:zee_goo/screens/Login/permission_waiting_screen.dart';
 
 import 'package:zee_goo/screens/home/m_screen.dart';
 
 class AgeScreen extends ConsumerStatefulWidget {
-  const AgeScreen({super.key});
+  final String gender;
+  const AgeScreen({super.key, required this.gender});
 
   @override
   ConsumerState<AgeScreen> createState() => _AgeScreenState();
@@ -61,18 +63,10 @@ class _AgeScreenState extends ConsumerState<AgeScreen> {
           .get();
       final permission = userDoc.data()?['permission'] ?? false;
 
-      // Navigate based on permission
-      if (permission) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const MScreen()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const PermissionWaitingScreen()),
-        );
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => NameScreen(gender: widget.gender)),
+      );
       ref.read(isLoadingProvider.notifier).state = false;
     } catch (e) {
       ScaffoldMessenger.of(

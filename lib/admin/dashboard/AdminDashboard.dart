@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsers/total_users_screen.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/total_users_screen.dart';
 import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 

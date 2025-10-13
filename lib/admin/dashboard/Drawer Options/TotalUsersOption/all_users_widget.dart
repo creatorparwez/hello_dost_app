@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsers/user_details_screen.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/user_details_screen.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 
 class AllUsersWidget extends ConsumerStatefulWidget {
@@ -109,7 +109,7 @@ class _AllUsersWidgetState extends ConsumerState<AllUsersWidget> {
                               userName: user.name,
                               gender: user.gender.toString(),
                               phone: user.phone.toString(),
-                              balance: user.balance.toStringAsFixed(2),
+                              balance: user.balance,
                               age: user.age.toString(),
                               languages: user.languages,
                               interests: user.interests,

@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
+import 'package:zee_goo/screens/Login/age_screen.dart';
+import 'package:zee_goo/screens/Login/gender_screen.dart';
 import 'package:zee_goo/screens/Login/name_screen.dart';
 
 class SelectLanguagesScreen extends ConsumerStatefulWidget {
-  const SelectLanguagesScreen({super.key});
+  final String gender;
+  const SelectLanguagesScreen({super.key, required this.gender});
 
   @override
   ConsumerState<SelectLanguagesScreen> createState() =>
@@ -17,11 +20,18 @@ class SelectLanguagesScreen extends ConsumerStatefulWidget {
 class _SelectLanguagesScreenState extends ConsumerState<SelectLanguagesScreen> {
   // List for interest
   final List<String> availableLanguages = [
-    "Hindi",
     "English",
-    "Bhojpuri",
+    "Hindi",
+    "Marathi ",
+    "Gujarati ",
+    "Tamil",
+    "Telugu",
+    "Kannada",
+    "Malayalam",
+    "Bengali",
     "Punjabi",
     "Urdu",
+    "Odia",
   ];
   // For Save Languages
   Future<void> saveLanguages(BuildContext context, WidgetRef ref) async {
@@ -29,7 +39,7 @@ class _SelectLanguagesScreenState extends ConsumerState<SelectLanguagesScreen> {
     ref.read(isLoadingProvider.notifier).state = true;
 
     final selectedLanguages = ref.read(languageProvider);
-    if (selectedLanguages.isEmpty || selectedLanguages.length < 2) {
+    if (selectedLanguages.isEmpty || selectedLanguages.length < 3) {
       ref.read(isLoadingProvider.notifier).state = false;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please select at least two language")),
@@ -45,7 +55,7 @@ class _SelectLanguagesScreenState extends ConsumerState<SelectLanguagesScreen> {
       }, SetOptions(merge: true));
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const NameScreen()),
+        MaterialPageRoute(builder: (_) => AgeScreen(gender: widget.gender)),
       );
       ref.read(isLoadingProvider.notifier).state = false;
     } catch (e) {

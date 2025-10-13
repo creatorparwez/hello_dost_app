@@ -9,4 +9,5 @@ class AppConstants {
   static const Color appsecondaryColor = Color.fromARGB(255, 221, 221, 221);
   static const double voiceCallRatePerSecond = 20.0 / 60.0; // 0.33 coins/sec
   static const double videoCallRatePerSecond = 1.0; // 1 coin/sec
+  static const String razorpayKey = "rzp_test_GcZZFDPP0jHtC4";
 }

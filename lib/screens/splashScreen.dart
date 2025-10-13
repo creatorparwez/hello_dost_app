@@ -28,7 +28,7 @@ class _SplashscreenState extends ConsumerState<Splashscreen> {
 
   // To check User Login
   Future<void> _checkLogin(BuildContext context) async {
-    Timer(Duration(seconds: 3), () async {
+    Timer(Duration(seconds: 2), () async {
       final user = _auth.currentUser;
       if (user != null) {
         // Fetch user document from Firestore

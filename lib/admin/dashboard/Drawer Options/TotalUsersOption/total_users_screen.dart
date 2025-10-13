@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsers/all_users_widget.dart';
-import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsers/approval_widget.dart';
-import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsers/female_users_widget.dart';
-import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsers/male_users_widget.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/all_users_widget.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/approval_widget.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/female_users_widget.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/male_users_widget.dart';
 
 import 'package:zee_goo/constants/app_constants.dart';
 

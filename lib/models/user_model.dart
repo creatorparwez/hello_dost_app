@@ -15,6 +15,7 @@ class UserModel {
   final bool permission;
   final bool isOnline;
   final bool isAdmin;
+  final String? imagePath; // ✅ New field added
 
   UserModel({
     required this.uid,
@@ -31,6 +32,7 @@ class UserModel {
     this.permission = false,
     this.isOnline = false,
     this.isAdmin = false,
+    this.imagePath, // ✅ New field in constructor
   }) : createdAt = createdAt ?? DateTime.now();
 
   /// 🔹 Convert Firestore map → UserModel
@@ -60,6 +62,7 @@ class UserModel {
       permission: map['permission'] ?? false,
       isOnline: map['isOnline'] ?? false,
       isAdmin: map['isAdmin'] ?? false,
+      imagePath: map['imagePath'], // ✅ new
     );
   }
 
@@ -80,6 +83,7 @@ class UserModel {
       "permission": permission,
       "isOnline": isOnline,
       "isAdmin": isAdmin,
+      "imagePath": imagePath, // ✅ new
     };
   }
 
@@ -96,6 +100,7 @@ class UserModel {
     bool? permission,
     bool? isOnline,
     bool? isAdmin,
+    String? imagePath, // ✅ new
   }) {
     return UserModel(
       uid: uid,
@@ -112,6 +117,7 @@ class UserModel {
       permission: permission ?? this.permission,
       isOnline: isOnline ?? this.isOnline,
       isAdmin: isAdmin ?? this.isAdmin,
+      imagePath: imagePath ?? this.imagePath, // ✅ new
     );
   }
 }

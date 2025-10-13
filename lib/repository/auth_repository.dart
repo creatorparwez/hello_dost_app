@@ -64,6 +64,7 @@ class AuthRepository {
             "name": name ?? "",
             "phone": user.phoneNumber,
             "gender": "",
+            "imagePath": "",
             "age": null,
             "interests": [],
             "languages": [],
