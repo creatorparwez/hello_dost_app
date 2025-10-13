@@ -51,3 +51,5 @@ flutter:
     - assets/admin/
     - assets/male_images/
     - assets/female_images/
+    - assets/males/
+    - assets/females/

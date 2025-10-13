@@ -128,7 +128,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                 ),
                                                 SizedBox(width: 8.w),
                                                 Text(
-                                                  "20",
+                                                  "18",
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 18.sp,
@@ -259,12 +259,18 @@ class _buildImageSection extends StatelessWidget {
           topRight: Radius.circular(20.r),
         ),
       ),
-      child: Image.asset(
-        data.gender == "Male"
-            ? 'assets/gender/male_22.png'
-            : 'assets/gender/female_3.png',
-        height: 150.h,
-        width: 1.sw,
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.r),
+          topRight: Radius.circular(20.r),
+        ),
+        child: Image.asset(
+          data.imagePath.toString(),
+          height: 180.h,
+          width: 1.sw,
+          fit: BoxFit.cover, // 👈 fills full width
+          alignment: Alignment.topCenter,
+        ),
       ),
     );
   }
@@ -301,10 +307,10 @@ class _buildLanguagesSection extends StatelessWidget {
       padding: EdgeInsets.only(left: 20.w),
       child: Wrap(
         runSpacing: 4.h,
-        children: List.generate(data.languages!.length, (index) {
+        children: List.generate(data.languages.length, (index) {
           return Text(
-            "${data.languages![index]}/",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            "${data.languages[index]}, ",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           );
         }),
       ),
@@ -321,9 +327,8 @@ class _buildInterestsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 2.w,
       runSpacing: 4.h,
-      children: List.generate(data.interests!.length, (index) {
+      children: List.generate(data.interests.length, (index) {
         return Padding(
           padding: EdgeInsets.only(left: 15.w),
           child: Container(
@@ -336,11 +341,11 @@ class _buildInterestsSection extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 5.w),
               child: Text(
-                data.interests![index],
+                data.interests[index],
                 style: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 15.sp,
                   color: Colors.black,
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
             ),

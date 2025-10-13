@@ -136,11 +136,6 @@ class _LoginScreenState extends ConsumerState<VerifyOTPScreen> {
                                     user.uid,
                                     userData.name,
                                   );
-                                }
-
-                                if (userData.languages != null &&
-                                    userData.languages!.isNotEmpty) {
-                                  // User has selected languages → go to home screen
                                   Navigator.pushReplacement(
                                     context,
                                     PageTransition(

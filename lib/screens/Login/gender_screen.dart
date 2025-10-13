@@ -20,21 +20,19 @@ class _ImageSliderScreenState extends State<GenderScreen> {
   final PageController _pageController = PageController(viewportFraction: 0.5);
 
   List<String> maleImages = [
-    'assets/gender/male_22.png',
-    'assets/gender/male_2.png',
-    'assets/gender/person.png',
-    'assets/gender/male_22.png',
-    'assets/gender/male_2.png',
-    'assets/gender/person.png',
+    'assets/males/male_1.png',
+    'assets/males/male_2.png',
+    'assets/males/male_3.png',
+    'assets/males/male_4.png',
+    'assets/males/male_5.png',
   ];
 
   List<String> femaleImages = [
-    'assets/gender/female.png',
-    'assets/gender/female_3.png',
-    'assets/gender/person.png',
-    'assets/gender/female.png',
-    'assets/gender/female_3.png',
-    'assets/gender/person.png',
+    'assets/females/female_1.png',
+    'assets/females/female_2.png',
+    'assets/females/female_3.png',
+    'assets/females/female_4.png',
+    'assets/females/female_5.png',
   ];
 
   bool isLoading = false;

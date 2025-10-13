@@ -3,14 +3,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/buy_coins_provider.dart';
 
-class BuyCoinsScreen extends ConsumerStatefulWidget {
-  const BuyCoinsScreen({super.key});
+class AddCoinsScreen extends ConsumerStatefulWidget {
+  final String userId;
+  const AddCoinsScreen({super.key, required this.userId});
 
   @override
-  ConsumerState<BuyCoinsScreen> createState() => _BuyCoinsScreenState();
+  ConsumerState<AddCoinsScreen> createState() => _BuyCoinsScreenState();
 }
 
-class _BuyCoinsScreenState extends ConsumerState<BuyCoinsScreen> {
+class _BuyCoinsScreenState extends ConsumerState<AddCoinsScreen> {
   int? selectedIndex; // Track selected card
 
   @override
@@ -20,7 +21,7 @@ class _BuyCoinsScreenState extends ConsumerState<BuyCoinsScreen> {
       backgroundColor: const Color.fromARGB(255, 207, 205, 205),
       appBar: AppBar(
         title: Text(
-          "Buy Coins",
+          "Add Coins",
           style: TextStyle(color: Colors.white, fontSize: 26.sp),
         ),
         iconTheme: IconThemeData(color: Colors.white),
@@ -58,8 +59,8 @@ class _BuyCoinsScreenState extends ConsumerState<BuyCoinsScreen> {
                       borderRadius: BorderRadius.circular(15.r),
                       side: isSelected
                           ? BorderSide(
-                              color: Colors.white,
-                              width: 4,
+                              color: Colors.deepOrange,
+                              width: 3,
                             ) // white outline
                           : BorderSide(color: Colors.transparent, width: 0),
                     ),

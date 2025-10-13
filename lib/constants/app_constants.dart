@@ -7,7 +7,7 @@ class AppConstants {
   static const String APP_NAME = "Hello Dost";
   static const Color appcolor = Color.fromARGB(255, 29, 28, 28);
   static const Color appsecondaryColor = Color.fromARGB(255, 221, 221, 221);
-  static const double voiceCallRatePerSecond = 20.0 / 60.0; // 0.33 coins/sec
-  static const double videoCallRatePerSecond = 1.0; // 1 coin/sec
+  static const double voiceCallRatePerSecond = 18.0 / 60.0; // 0.3 coins/sec (6₹/min = 18 coins/min)
+  static const double videoCallRatePerSecond = 60.0 / 60.0; // 1 coin/sec (20₹/min = 60 coins/min)
   static const String razorpayKey = "rzp_test_GcZZFDPP0jHtC4";
 }

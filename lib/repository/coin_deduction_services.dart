@@ -16,7 +16,7 @@ class CoinDeductionService {
   bool _isRunning = false;
   late bool _isVideo;
 
-  static const String adminUid = 'tFe7ApxZkITW5M6bcvehZlEHSkg2';
+  static const String adminUid = 'Y17OPR8sdPCVJZebRQsC';
 
   double _ratePerSecond(bool isVideo) => isVideo
       ? AppConstants.videoCallRatePerSecond
@@ -81,15 +81,54 @@ class CoinDeductionService {
     required String receiverId,
     required String receiverName,
     required bool isVideo,
+    bool isCallCard = false,
   }) async {
     stop();
 
     final int totalSeconds = _seconds;
     final double totalCoins = _coinsDeducted;
-    final double adminShare = totalCoins / 2.0;
-    final double receiverShare = totalCoins / 2.0;
 
-    print('💾 Stopping call - Duration: ${totalSeconds}s, Coins: $totalCoins');
+    // Convert coins to rupees (1₹ = 3 coins)
+    final double totalRupees = totalCoins / 3.0;
+
+    // Calculate shares in rupees based on 30-second threshold
+    double adminShareRupees;
+    double receiverShareRupees;
+
+    if (totalSeconds < 30) {
+      // Less than 30 seconds: Admin gets 100%, receiver gets 0
+      adminShareRupees = totalRupees;
+      receiverShareRupees = 0.0;
+      print(
+        '⏱️ Call < 30s: Admin gets 100% (${totalRupees.toStringAsFixed(2)}₹)',
+      );
+    } else {
+      // 30 seconds or more: Apply proper splits in rupees
+      if (isVideo) {
+        // Video call: Female gets 6.50₹/min, Admin gets 13.50₹/min
+        // Calculate based on duration
+        final double minutes = totalSeconds / 60.0;
+        receiverShareRupees = 6.50 * minutes;
+        adminShareRupees = totalRupees - receiverShareRupees;
+      } else {
+        // Voice call: Female gets 1.02₹/min, Admin gets 4.98₹/min
+        // Calculate based on duration
+        final double minutes = totalSeconds / 60.0;
+        receiverShareRupees = 1.02 * minutes;
+        adminShareRupees = totalRupees - receiverShareRupees;
+      }
+      print(
+        '⏱️ Call ≥ 30s: Receiver gets ${receiverShareRupees.toStringAsFixed(2)}₹ (${(receiverShareRupees * 3).toStringAsFixed(2)} coins), Admin gets ${adminShareRupees.toStringAsFixed(2)}₹ (${(adminShareRupees * 3).toStringAsFixed(2)} coins)',
+      );
+    }
+
+    // Store rupees directly in database (not coins)
+    final double receiverShare = receiverShareRupees;
+    final double adminShare = adminShareRupees;
+
+    print(
+      '💾 Stopping call - Duration: ${totalSeconds}s, Total: ${totalRupees.toStringAsFixed(2)}₹, Receiver: ${receiverShare.toStringAsFixed(2)}₹, Admin: ${adminShare.toStringAsFixed(2)}₹',
+    );
 
     if (totalSeconds == 0 || totalCoins <= 0) {
       print('⏹ No coins deducted — skipping save.');
@@ -199,8 +238,33 @@ class CoinDeductionService {
             'callId': callHistoryRef.id,
             'callerId': callerId,
             'callerName': callerName,
+            'receiverId': receiverId,
+            'receiverName': receiverName,
             'durationSeconds': totalSeconds,
             'coinsReceived': receiverShare,
+            'totalCoinsDeducted': totalCoins,
+            'isVideo': isVideo,
+            'createdAt': FieldValue.serverTimestamp(),
+          })
+          .timeout(const Duration(seconds: 5));
+
+      // Caller's personal record
+      final callerRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(callerId);
+
+      await callerRef
+          .collection('calls')
+          .doc(callHistoryRef.id)
+          .set({
+            'callId': callHistoryRef.id,
+            'callerId': callerId,
+            'callerName': callerName,
+            'receiverId': receiverId,
+            'receiverName': receiverName,
+            'durationSeconds': totalSeconds,
+            'coinsReceived': receiverShare,
+            'totalCoinsDeducted': totalCoins,
             'isVideo': isVideo,
             'createdAt': FieldValue.serverTimestamp(),
           })

@@ -16,6 +16,12 @@ class _CallHistoryScreenState extends ConsumerState<CallHistoryScreen> {
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
+    final userDataAsync = ref.watch(userDataProvider(currentUser!.uid));
+    final currentUserGender = userDataAsync.value?.gender;
+
+    if (currentUserGender == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     final userCallsAsync = ref.watch(callsHistoryProvider(currentUser!.uid));
     return userCallsAsync.when(
@@ -63,7 +69,9 @@ class _CallHistoryScreenState extends ConsumerState<CallHistoryScreen> {
                             ),
                             SizedBox(width: 20.w),
                             Text(
-                              data.callerName,
+                              currentUserGender == "Male"
+                                  ? data.receiverName
+                                  : data.callerName,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 30.sp,
@@ -97,7 +105,9 @@ class _CallHistoryScreenState extends ConsumerState<CallHistoryScreen> {
                               ),
                             ),
                             Text(
-                              "Earned : ${data.coinsReceived.toStringAsFixed(2)}",
+                              currentUserGender == "Male"
+                                  ? "Coins Deducted : ${data.totalCoinsDeducted.toStringAsFixed(2)}"
+                                  : "Earned : ₹ ${data.coinsReceived.toStringAsFixed(2)}",
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,

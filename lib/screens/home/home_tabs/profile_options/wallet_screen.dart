@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
-import 'package:zee_goo/screens/home/home_tabs/profile_options/buy_coins_screen.dart';
+import 'package:zee_goo/screens/home/home_tabs/profile_options/add_coins_screen.dart';
 
 class WalletScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -61,10 +61,12 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                         ),
                         Row(
                           children: [
-                            Image.asset(
-                              'assets/images/dollar.png',
-                              height: 38.h,
-                              width: 38.w,
+                            Text(
+                              "₹",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40.sp,
+                              ),
                             ),
                             SizedBox(width: 10.w),
                             Consumer(
@@ -96,28 +98,23 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                           padding: EdgeInsets.only(left: 10.w),
                           child: TextButton(
                             style: TextButton.styleFrom(
-                              elevation: 8,
+                              elevation: 3,
+                              shadowColor: Colors.white,
                               backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15.r),
+                                borderRadius: BorderRadius.circular(10.r),
                               ),
                             ),
                             onPressed: () {
-                              // Buy Coins
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => BuyCoinsScreen(),
-                                ),
-                              );
+                              // Withdraw Logics Here
                             },
                             child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 10.w),
+                              padding: EdgeInsets.symmetric(horizontal: 20.w),
                               child: Text(
-                                "Buy Coins",
+                                "Withdraw",
                                 style: TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 17,
+                                  fontSize: 18.sp,
                                 ),
                               ),
                             ),
@@ -129,17 +126,6 @@ class _WalletScreenState extends ConsumerState<WalletScreen> {
                     Icon(Iconsax.wallet_35, color: Colors.white, size: 80.sp),
                   ],
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 5.h),
-            child: Text(
-              "Recent Transactions",
-              style: TextStyle(
-                fontWeight: FontWeight.w400,
-                fontSize: 22,
-                color: const Color.fromARGB(255, 41, 41, 41),
               ),
             ),
           ),
