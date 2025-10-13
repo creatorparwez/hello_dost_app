@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +18,26 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  Timer? _refreshTimer;
+  int _shuffleTrigger = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Set up a timer to shuffle and refresh online users every 2 seconds
+    _refreshTimer = Timer.periodic(Duration(seconds: 2), (timer) {
+      setState(() {
+        _shuffleTrigger++;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUserId = FirebaseAuth.instance.currentUser;
@@ -33,12 +55,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           data: (allUsersData) {
             final currentUserId = FirebaseAuth.instance.currentUser?.uid;
 
-            // Filter out logged-in user
+            // Filter out logged-in user and shuffle the list
             final otherUsers = allUsersData
                 .where(
                   (user) => user.uid != currentUserId && user.isOnline == true,
                 )
                 .toList();
+
+            // Shuffle the list to randomize user positions
+            // Using _shuffleTrigger to trigger re-shuffle on timer
+            otherUsers.shuffle(Random(_shuffleTrigger));
+
             return ListView.builder(
               itemCount: otherUsers.length,
               itemBuilder: (context, index) {
