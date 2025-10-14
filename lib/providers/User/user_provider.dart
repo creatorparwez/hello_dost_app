@@ -64,6 +64,24 @@ final allCallHistoryProvider = StreamProvider<List<CallHistoryModel>>((ref) {
   return repo.getAllCalls();
 });
 
+// To get Today Calls
+final todayCallHistoryProvider = StreamProvider<List<CallHistoryModel>>((ref) {
+  final repo = ref.read(usersRepositoryProvider);
+  return repo.getTodayCalls();
+});
+
+// To get Week Calls
+final weekCallHistoryProvider = StreamProvider<List<CallHistoryModel>>((ref) {
+  final repo = ref.read(usersRepositoryProvider);
+  return repo.getWeekCalls();
+});
+
+// To get Month Calls
+final monthCallHistoryProvider = StreamProvider<List<CallHistoryModel>>((ref) {
+  final repo = ref.read(usersRepositoryProvider);
+  return repo.getMonthCalls();
+});
+
 // To get User Calls History by their Id (Only calls of particular User)
 final callsHistoryProvider = StreamProvider.family<List<CallsModel>, String>((
   ref,

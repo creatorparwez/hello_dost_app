@@ -107,12 +107,13 @@ class _AllUsersWidgetState extends ConsumerState<AllUsersWidget> {
                             builder: (_) => UserDetailsScreen(
                               userId: user.uid,
                               userName: user.name,
-                              gender: user.gender.toString(),
-                              phone: user.phone.toString(),
+                              gender: user.gender ?? "N/A",
+                              phone: user.phone ?? "N/A",
                               balance: user.balance,
-                              age: user.age.toString(),
+                              age: user.age ?? 0,
                               languages: user.languages,
                               interests: user.interests,
+                              imagePath: user.imagePath ?? "",
                             ),
                           ),
                         );

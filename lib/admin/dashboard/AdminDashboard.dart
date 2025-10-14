@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalCallsOption/total_calls_screen.dart';
+import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalRevenueOption/total_revenue_screen.dart';
 import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/total_users_screen.dart';
 import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
@@ -60,6 +62,13 @@ class _DashboardState extends ConsumerState<Admindashboard> {
             _dashbordSections(
               title: "Total Calls",
               lenght: allCallsLength,
+              iconss: Icons.call,
+            ),
+            SizedBox(height: 10.h),
+            // Total Revenue Section
+            _dashbordSections(
+              title: "Total Revenue",
+              lenght: "0",
               iconss: Icons.call,
             ),
           ],
@@ -136,6 +145,10 @@ class _buildDrawerSection extends StatelessWidget {
             ListTile(
               onTap: () {
                 // Navigate to Total Calls Screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => TotalCallsScreen()),
+                );
               },
               leading: Icon(Iconsax.call, size: 30.sp, color: Colors.white),
               title: Text(
@@ -147,14 +160,33 @@ class _buildDrawerSection extends StatelessWidget {
                 ),
               ),
             ),
+            // Total Revenue
+            ListTile(
+              onTap: () {
+                // Navigate to Total Revenue Screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => TotalRevenueScreen()),
+                );
+              },
+              leading: Icon(Icons.paid, size: 30.sp, color: Colors.white),
+              title: Text(
+                "Total Revenue",
+                style: TextStyle(
+                  fontSize: 22.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.white,
+                ),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.h),
               child: Divider(thickness: 1, color: Colors.white),
             ),
-            // Total Calls
+            // Logout
             ListTile(
               onTap: () {
-                // Navigate to Total Users Screen
+                // logout
               },
               leading: Icon(Iconsax.logout, size: 30.sp, color: Colors.white),
               title: Text(

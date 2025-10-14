@@ -8,10 +8,10 @@ class FemaleUsersWidget extends ConsumerStatefulWidget {
   const FemaleUsersWidget({super.key});
 
   @override
-  ConsumerState<FemaleUsersWidget> createState() => _MaleUsersWidgetState();
+  ConsumerState<FemaleUsersWidget> createState() => _FemaleUsersWidgetState();
 }
 
-class _MaleUsersWidgetState extends ConsumerState<FemaleUsersWidget> {
+class _FemaleUsersWidgetState extends ConsumerState<FemaleUsersWidget> {
   String searchQuery = '';
 
   @override
@@ -43,8 +43,8 @@ class _MaleUsersWidgetState extends ConsumerState<FemaleUsersWidget> {
         Expanded(
           child: allUsersAsync.when(
             data: (allUsersData) {
-              // 🔹 Step 1: Filter only Male users
-              final maleUsers = allUsersData
+              // 🔹 Step 1: Filter only Female users
+              final femaleUsers = allUsersData
                   .where(
                     (user) =>
                         user.gender != null &&
@@ -53,7 +53,7 @@ class _MaleUsersWidgetState extends ConsumerState<FemaleUsersWidget> {
                   .toList();
 
               // 🔹 Step 2: Apply search filter (on name or phone)
-              final filteredUsers = maleUsers.where((user) {
+              final filteredUsers = femaleUsers.where((user) {
                 final name = user.name.toLowerCase();
                 final phone = user.phone?.toLowerCase() ?? '';
                 return name.contains(searchQuery) ||
@@ -84,8 +84,8 @@ class _MaleUsersWidgetState extends ConsumerState<FemaleUsersWidget> {
                     elevation: 3,
                     child: ListTile(
                       leading: Icon(
-                        Icons.male,
-                        color: Colors.blueAccent,
+                        Icons.female,
+                        color: Colors.pinkAccent,
                         size: 35.sp,
                       ),
                       title: Text(
@@ -117,12 +117,13 @@ class _MaleUsersWidgetState extends ConsumerState<FemaleUsersWidget> {
                             builder: (_) => UserDetailsScreen(
                               userId: user.uid,
                               userName: user.name,
-                              gender: user.gender.toString(),
-                              phone: user.phone.toString(),
+                              gender: user.gender ?? "N/A",
+                              phone: user.phone ?? "N/A",
                               balance: user.balance,
-                              age: user.age.toString(),
+                              age: user.age ?? 0,
                               languages: user.languages,
                               interests: user.interests,
+                              imagePath: user.imagePath ?? "",
                             ),
                           ),
                         );

@@ -29,15 +29,6 @@ class UsersRepository {
     });
   }
 
-  // Get All Calls
-  Stream<List<CallHistoryModel>> getAllCalls() {
-    return _firestore.collection('call_history').snapshots().map((snapshot) {
-      return snapshot.docs
-          .map((doc) => CallHistoryModel.fromMap(doc.data(), doc.id))
-          .toList();
-    });
-  }
-
   // Get Admin Data
   Stream<UserModel?> getAdminData() {
     return _firestore
@@ -52,6 +43,99 @@ class UsersRepository {
           } else {
             return null;
           }
+        });
+  }
+
+  // Get All Calls
+  Stream<List<CallHistoryModel>> getAllCalls() {
+    return _firestore
+        .collection('call_history')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => CallHistoryModel.fromMap(doc.data(), doc.id))
+              .toList();
+        });
+  }
+
+  // Get Today Calls
+  Stream<List<CallHistoryModel>> getTodayCalls() {
+    final now = DateTime.now();
+    final startOfDay = Timestamp.fromDate(
+      DateTime(now.year, now.month, now.day, 0, 0, 0),
+    );
+    final endOfDay = Timestamp.fromDate(
+      DateTime(now.year, now.month, now.day, 23, 59, 59),
+    );
+    return _firestore
+        .collection('call_history')
+        .where('createdAt', isGreaterThanOrEqualTo: startOfDay)
+        .where('createdAt', isLessThanOrEqualTo: endOfDay)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => CallHistoryModel.fromMap(doc.data(), doc.id))
+              .toList();
+        });
+  }
+
+  // Get Week Calls
+  Stream<List<CallHistoryModel>> getWeekCalls() {
+    final now = DateTime.now();
+
+    // Start of week (Monday)
+    final startOfWeek = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).subtract(Duration(days: now.weekday - 1));
+
+    // End of week (Sunday 23:59:59)
+    final endOfWeek = startOfWeek.add(
+      const Duration(days: 6, hours: 23, minutes: 59, seconds: 59),
+    );
+
+    return _firestore
+        .collection('call_history')
+        .where(
+          'createdAt',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startOfWeek),
+        )
+        .where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endOfWeek))
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => CallHistoryModel.fromMap(doc.data(), doc.id))
+              .toList();
+        });
+  }
+
+  // Get Month Calls
+  Stream<List<CallHistoryModel>> getMonthCalls() {
+    final now = DateTime.now();
+
+    // Start of current month
+    final startOfMonth = DateTime(now.year, now.month, 1, 0, 0, 0);
+
+    // End of month (last day of this month)
+    final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
+
+    return _firestore
+        .collection('call_history')
+        .where(
+          'createdAt',
+          isGreaterThanOrEqualTo: Timestamp.fromDate(startOfMonth),
+        )
+        .where('createdAt', isLessThanOrEqualTo: Timestamp.fromDate(endOfMonth))
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => CallHistoryModel.fromMap(doc.data(), doc.id))
+              .toList();
         });
   }
 

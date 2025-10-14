@@ -196,6 +196,7 @@ class CoinDeductionService {
       totalSeconds: totalSeconds,
       totalCoins: totalCoins,
       receiverShare: receiverShare,
+      adminShare: adminShare,
       isVideo: isVideo,
     );
 
@@ -213,6 +214,7 @@ class CoinDeductionService {
     required int totalSeconds,
     required double totalCoins,
     required double receiverShare,
+    required double adminShare,
     required bool isVideo,
   }) async {
     try {
@@ -224,7 +226,10 @@ class CoinDeductionService {
             'receiverId': receiverId,
             'receiverName': receiverName,
             'durationSeconds': totalSeconds,
-            'coinsDeducted': totalCoins,
+            'totalCoins': totalCoins,
+            'coinsDeducted': totalCoins, // Kept for backward compatibility
+            'receiverShare': receiverShare,
+            'adminShare': adminShare,
             'isVideo': isVideo,
             'createdAt': FieldValue.serverTimestamp(),
           })
@@ -242,7 +247,10 @@ class CoinDeductionService {
             'receiverName': receiverName,
             'durationSeconds': totalSeconds,
             'coinsReceived': receiverShare,
-            'totalCoinsDeducted': totalCoins,
+            'receiverShare': receiverShare,
+            'adminShare': adminShare,
+            'totalCoins': totalCoins,
+            'totalCoinsDeducted': totalCoins, // Kept for backward compatibility
             'isVideo': isVideo,
             'createdAt': FieldValue.serverTimestamp(),
           })
@@ -263,8 +271,11 @@ class CoinDeductionService {
             'receiverId': receiverId,
             'receiverName': receiverName,
             'durationSeconds': totalSeconds,
-            'coinsReceived': receiverShare,
-            'totalCoinsDeducted': totalCoins,
+            'coinsSpent': totalCoins,
+            'receiverShare': receiverShare,
+            'adminShare': adminShare,
+            'totalCoins': totalCoins,
+            'totalCoinsDeducted': totalCoins, // Kept for backward compatibility
             'isVideo': isVideo,
             'createdAt': FieldValue.serverTimestamp(),
           })

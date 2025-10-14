@@ -33,7 +33,11 @@ class _TotalUsersSegmentedState extends State<TotalUsersScreen> {
       appBar: AppBar(
         title: Text(
           "Users",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 27.sp,
+          ),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF141D3C),

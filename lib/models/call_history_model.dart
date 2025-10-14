@@ -8,6 +8,9 @@ class CallHistoryModel {
   final String receiverId;
   final String receiverName;
   final num coinsDeducted;
+  final num totalCoins;
+  final num adminShare;
+  final num receiverShare;
   final int durationSeconds;
   final bool isVideo;
   final Timestamp createdAt;
@@ -20,6 +23,9 @@ class CallHistoryModel {
     required this.receiverId,
     required this.receiverName,
     required this.coinsDeducted,
+    required this.totalCoins,
+    required this.adminShare,
+    required this.receiverShare,
     required this.durationSeconds,
     required this.isVideo,
     required this.createdAt,
@@ -35,6 +41,9 @@ class CallHistoryModel {
       receiverId: map['receiverId'] ?? '',
       receiverName: map['receiverName'] ?? '',
       coinsDeducted: map['coinsDeducted'] ?? 0,
+      totalCoins: map['totalCoins'] ?? 0,
+      adminShare: map['adminShare'] ?? 0,
+      receiverShare: map['receiverShare'] ?? 0,
       durationSeconds: map['durationSeconds'] ?? 0,
       isVideo: map['isVideo'] ?? false,
       createdAt: map['createdAt'] ?? Timestamp.now(),
@@ -50,6 +59,9 @@ class CallHistoryModel {
       'receiverId': receiverId,
       'receiverName': receiverName,
       'coinsDeducted': coinsDeducted,
+      'totalCoins': totalCoins,
+      'adminShare': adminShare,
+      'receiverShare': receiverShare,
       'durationSeconds': durationSeconds,
       'isVideo': isVideo,
       'createdAt': createdAt,
@@ -66,6 +78,9 @@ class CallHistoryModel {
       receiverId: json['receiverId'] ?? '',
       receiverName: json['receiverName'] ?? '',
       coinsDeducted: json['coinsDeducted'] ?? 0,
+      totalCoins: json['totalCoins'] ?? 0,
+      adminShare: json['adminShare'] ?? 0,
+      receiverShare: json['receiverShare'] ?? 0,
       durationSeconds: json['durationSeconds'] ?? 0,
       isVideo: json['isVideo'] ?? false,
       createdAt: json['createdAt'] is Timestamp
@@ -83,6 +98,9 @@ class CallHistoryModel {
       'receiverId': receiverId,
       'receiverName': receiverName,
       'coinsDeducted': coinsDeducted,
+      'totalCoins': totalCoins,
+      'adminShare': adminShare,
+      'receiverShare': receiverShare,
       'durationSeconds': durationSeconds,
       'isVideo': isVideo,
       'createdAt': createdAt.millisecondsSinceEpoch,
