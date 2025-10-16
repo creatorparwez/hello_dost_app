@@ -104,8 +104,14 @@ class _MonthCallsWidgetState extends ConsumerState<MonthCallsWidget> {
                           "Coins Deducted",
                           "💰 ${data.coinsDeducted.toStringAsFixed(2)}",
                         ),
-                        _infoTile("Admin", "₹${data.adminShare}"),
-                        _infoTile("Receiver", "₹${data.receiverShare}"),
+                        _infoTile(
+                          "Admin",
+                          "₹${data.adminShare.toStringAsFixed(2)}",
+                        ),
+                        _infoTile(
+                          "Receiver",
+                          "₹${data.receiverShare.toStringAsFixed(2)}",
+                        ),
                       ],
                     ),
                   ],
