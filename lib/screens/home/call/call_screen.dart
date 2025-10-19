@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/repository/coin_deduction_services.dart';
+import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class CallScreen extends StatefulWidget {
@@ -134,9 +137,9 @@ class _CallScreenState extends State<CallScreen> {
           config: widget.isVideo
               ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
               : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall(),
+
           events: ZegoUIKitPrebuiltCallEvents(
-            onCallEnd:
-                (ZegoCallEndEvent event, VoidCallback defaultAction) async {
+            onCallEnd: (ZegoCallEndEvent event, VoidCallback defaultAction) async {
               debugPrint("📞 Call ended with reason: ${event.reason}");
 
               // Capture navigator before async operations
@@ -159,11 +162,13 @@ class _CallScreenState extends State<CallScreen> {
                   navigator.popUntil((route) {
                     routeCount++;
                     debugPrint(
-                        "📍 Route $routeCount: ${route.settings.name ?? 'unnamed'}, isFirst: ${route.isFirst}");
+                      "📍 Route $routeCount: ${route.settings.name ?? 'unnamed'}, isFirst: ${route.isFirst}",
+                    );
                     return route.isFirst;
                   });
                   debugPrint(
-                      "✅ Popped $routeCount routes, returned to home after call");
+                    "✅ Popped $routeCount routes, returned to home after call",
+                  );
                 } catch (e) {
                   debugPrint("⚠️ Error with popUntil: $e");
                   // Fallback: manual pops
@@ -184,7 +189,8 @@ class _CallScreenState extends State<CallScreen> {
                 if (!mounted || _isHangingUp) return;
 
                 debugPrint(
-                    "⚠️ Remote user disconnected - ending call for caller");
+                  "⚠️ Remote user disconnected - ending call for caller",
+                );
 
                 // Mark as hanging up to prevent duplicate calls
                 _isHangingUp = true;
@@ -209,12 +215,16 @@ class _CallScreenState extends State<CallScreen> {
                     try {
                       // Pop all screens to return to home
                       navigator.popUntil((route) => route.isFirst);
-                      debugPrint("✅ Successfully returned to home after remote user left");
+                      debugPrint(
+                        "✅ Successfully returned to home after remote user left",
+                      );
                     } catch (e) {
                       debugPrint("⚠️ Error with popUntil: $e");
                       // Fallback: manual pops
                       int poppedScreens = 0;
-                      while (mounted && navigator.canPop() && poppedScreens < 5) {
+                      while (mounted &&
+                          navigator.canPop() &&
+                          poppedScreens < 5) {
                         navigator.pop();
                         poppedScreens++;
                         debugPrint("✅ Manual pop $poppedScreens");

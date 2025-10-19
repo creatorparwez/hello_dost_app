@@ -7,6 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
 import 'package:zee_goo/screens/home/home_tabs/call_history_screen.dart';
+import 'package:zee_goo/screens/home/home_tabs/profile_options/account_settings.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/add_coins_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/earnings_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/wallet_screen.dart';
@@ -93,7 +94,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             },
                           ),
                           SizedBox(height: 10.h),
-
+                          // Account Settings
+                          _buildSections(
+                            icon: Icons.person_2,
+                            title: "Account Settings",
+                            onTap: () {
+                              // Account Settings Option
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AccountSettings(
+                                    userId: datas.uid,
+                                    blockedUserIds: datas.blockedUsers,
+                                    gender: datas.gender.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 10.h),
                           SizedBox(height: 20.h),
                           Container(
                             height: 2.h,
@@ -189,6 +208,25 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           ),
                           SizedBox(height: 10.h),
 
+                          // Account Settings
+                          _buildSections(
+                            icon: Icons.person_2,
+                            title: "Account Settings",
+                            onTap: () {
+                              // Account Settings Option
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AccountSettings(
+                                    userId: datas.uid,
+                                    blockedUserIds: datas.blockedUsers,
+                                    gender: datas.gender.toString(),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 10.h),
                           SizedBox(height: 20.h),
                           Container(
                             height: 2.h,

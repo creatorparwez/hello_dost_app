@@ -15,7 +15,8 @@ class UserModel {
   final bool permission;
   final bool isOnline;
   final bool isAdmin;
-  final String? imagePath; // ✅ New field added
+  final String? imagePath;
+  final List<String> blockedUsers; // ✅ NEW FIELD
 
   UserModel({
     required this.uid,
@@ -32,7 +33,8 @@ class UserModel {
     this.permission = false,
     this.isOnline = false,
     this.isAdmin = false,
-    this.imagePath, // ✅ New field in constructor
+    this.imagePath,
+    this.blockedUsers = const [], // ✅ default empty list
   }) : createdAt = createdAt ?? DateTime.now();
 
   /// 🔹 Convert Firestore map → UserModel
@@ -51,6 +53,11 @@ class UserModel {
       languages: map['languages'] != null
           ? List<String>.from(map['languages'])
           : [],
+      blockedUsers:
+          map['blockedUsers'] !=
+              null // ✅ added
+          ? List<String>.from(map['blockedUsers'])
+          : [],
       balance: map['balance'] != null
           ? (map['balance'] is int
                 ? (map['balance'] as int).toDouble()
@@ -62,7 +69,7 @@ class UserModel {
       permission: map['permission'] ?? false,
       isOnline: map['isOnline'] ?? false,
       isAdmin: map['isAdmin'] ?? false,
-      imagePath: map['imagePath'], // ✅ new
+      imagePath: map['imagePath'],
     );
   }
 
@@ -78,12 +85,13 @@ class UserModel {
       "age": age,
       "interests": interests,
       "languages": languages,
+      "blockedUsers": blockedUsers, // ✅ added
       "balance": balance,
       "createdAt": createdAt,
       "permission": permission,
       "isOnline": isOnline,
       "isAdmin": isAdmin,
-      "imagePath": imagePath, // ✅ new
+      "imagePath": imagePath,
     };
   }
 
@@ -96,11 +104,12 @@ class UserModel {
     int? age,
     List<String>? interests,
     List<String>? languages,
+    List<String>? blockedUsers, // ✅ added
     double? balance,
     bool? permission,
     bool? isOnline,
     bool? isAdmin,
-    String? imagePath, // ✅ new
+    String? imagePath,
   }) {
     return UserModel(
       uid: uid,
@@ -112,12 +121,13 @@ class UserModel {
       age: age ?? this.age,
       interests: interests ?? this.interests,
       languages: languages ?? this.languages,
+      blockedUsers: blockedUsers ?? this.blockedUsers, // ✅ added
       balance: balance ?? this.balance,
       createdAt: createdAt,
       permission: permission ?? this.permission,
       isOnline: isOnline ?? this.isOnline,
       isAdmin: isAdmin ?? this.isAdmin,
-      imagePath: imagePath ?? this.imagePath, // ✅ new
+      imagePath: imagePath ?? this.imagePath,
     );
   }
 }

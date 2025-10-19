@@ -153,4 +153,19 @@ class UsersRepository {
               .toList();
         });
   }
+
+  // To get Top 10 Females based on Balance
+  Stream<List<UserModel>> getTopFemales() {
+    return _firestore
+        .collection('users')
+        .where('gender', isEqualTo: "Female")
+        .orderBy('balance', descending: true)
+        .limit(10)
+        .snapshots()
+        .map((snapshot) {
+          return snapshot.docs
+              .map((doc) => UserModel.fromMap(doc.data(), doc.id))
+              .toList();
+        });
+  }
 }

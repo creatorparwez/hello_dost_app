@@ -6,6 +6,7 @@ import 'package:zee_goo/admin/dashboard/AdminDashboard.dart';
 import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalCallsOption/total_calls_screen.dart';
 import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/total_users_screen.dart';
 import 'package:zee_goo/admin/dashboard/Drawer%20Options/add_coins_item.dart';
+
 import 'package:zee_goo/firebase_options.dart';
 import 'package:zee_goo/paymentts.dart';
 import 'package:zee_goo/screens/Login/gender_screen.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        home: Admindashboard(),
+        home: Splashscreen(),
       ),
     );
   }

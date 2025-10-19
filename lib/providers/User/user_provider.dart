@@ -90,3 +90,9 @@ final callsHistoryProvider = StreamProvider.family<List<CallsModel>, String>((
   final repo = ref.watch((usersRepositoryProvider));
   return repo.getCallsHistoryByUserId(userId);
 });
+
+// To get Top 10 Females based on Balance
+final topFemalesProvider = StreamProvider<List<UserModel>>((ref) {
+  final repo = ref.read(usersRepositoryProvider);
+  return repo.getTopFemales();
+});

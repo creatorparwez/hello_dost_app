@@ -7,6 +7,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/home/home_tabs/call_history_screen.dart';
+import 'package:zee_goo/screens/home/call_history_tab/call_history_tab.dart';
 import 'package:zee_goo/screens/home/home_tabs/home_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/add_coins_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_screen.dart';
@@ -23,7 +24,8 @@ class _MScreenState extends ConsumerState<MScreen> with WidgetsBindingObserver {
   int isSelectedIndex = 0;
   List<Widget> isSelected = [
     HomeScreen(),
-    CallHistoryScreen(),
+    // CallHistoryScreen(),
+    CallHistoryTab(),
     ProfileScreen(),
   ];
 

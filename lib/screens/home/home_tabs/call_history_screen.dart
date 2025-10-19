@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 
@@ -13,6 +15,18 @@ class CallHistoryScreen extends ConsumerStatefulWidget {
 }
 
 class _CallHistoryScreenState extends ConsumerState<CallHistoryScreen> {
+  // To Block User
+  Future<void> blockUser(String callerId, String calleeId) async {
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(calleeId).update(
+        {
+          'blockedUsers': FieldValue.arrayUnion([callerId]),
+        },
+      );
+      Fluttertoast.showToast(msg: "User blocked", backgroundColor: Colors.red);
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -23,7 +37,7 @@ class _CallHistoryScreenState extends ConsumerState<CallHistoryScreen> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final userCallsAsync = ref.watch(callsHistoryProvider(currentUser!.uid));
+    final userCallsAsync = ref.watch(callsHistoryProvider(currentUser.uid));
     return userCallsAsync.when(
       data: (callsData) {
         return ListView.builder(
@@ -78,6 +92,34 @@ class _CallHistoryScreenState extends ConsumerState<CallHistoryScreen> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            Spacer(),
+                            currentUserGender == "Female"
+                                ? ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                        255,
+                                        241,
+                                        43,
+                                        29,
+                                      ),
+                                    ),
+                                    onPressed: () async {
+                                      // Block User Logic
+                                      await blockUser(
+                                        data.callerId,
+                                        data.receiverId,
+                                      );
+                                    },
+                                    child: Text(
+                                      "Block",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  )
+                                : SizedBox.shrink(),
                           ],
                         ),
                       ),

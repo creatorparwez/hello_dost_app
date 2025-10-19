@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -122,7 +123,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                     BorderRadius.circular(10.r),
                                               ),
                                             ),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               if (datass.balance <
                                                   AppConstants
                                                       .voiceCallRatePerSecond) {
@@ -135,15 +136,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                     ),
                                                   ),
                                                 );
-                                              } else {
-                                                sendCall(
-                                                  isVideo: false,
-                                                  receiverId: data.uid,
-                                                  receiverName: data.name,
-                                                  ref: ref,
-                                                  context: context,
-                                                );
+                                                return;
                                               }
+                                              // Check Blocked Users
+                                              final currentUserId = FirebaseAuth
+                                                  .instance
+                                                  .currentUser!
+                                                  .uid;
+                                              final receiverDoc =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('users')
+                                                      .doc(data.uid)
+                                                      .get();
+
+                                              if (receiverDoc.exists) {
+                                                final receiverData = receiverDoc
+                                                    .data()!;
+                                                final List blockedList =
+                                                    receiverData['blockedUsers'] ??
+                                                    [];
+
+                                                if (blockedList.contains(
+                                                  currentUserId,
+                                                )) {
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                        "You are blocked by this user.",
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                      duration: Duration(
+                                                        seconds: 2,
+                                                      ),
+                                                    ),
+                                                  );
+                                                  return; // stop here
+                                                }
+                                              }
+                                              // For Send Call
+                                              sendCall(
+                                                isVideo: false,
+                                                receiverId: data.uid,
+                                                receiverName: data.name,
+                                                ref: ref,
+                                                context: context,
+                                              );
                                             },
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,
@@ -190,7 +231,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                     BorderRadius.circular(10.r),
                                               ),
                                             ),
-                                            onPressed: () {
+                                            onPressed: () async {
                                               if (datass.balance <
                                                   AppConstants
                                                       .videoCallRatePerSecond) {
@@ -203,15 +244,55 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                     ),
                                                   ),
                                                 );
-                                              } else {
-                                                sendCall(
-                                                  isVideo: true,
-                                                  receiverId: data.uid,
-                                                  receiverName: data.name,
-                                                  ref: ref,
-                                                  context: context,
-                                                );
+                                                return;
                                               }
+                                              // Check Blocked Users
+                                              final currentUserId = FirebaseAuth
+                                                  .instance
+                                                  .currentUser!
+                                                  .uid;
+                                              final receiverDoc =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('users')
+                                                      .doc(data.uid)
+                                                      .get();
+
+                                              if (receiverDoc.exists) {
+                                                final receiverData = receiverDoc
+                                                    .data()!;
+                                                final List blockedList =
+                                                    receiverData['blockedUsers'] ??
+                                                    [];
+
+                                                if (blockedList.contains(
+                                                  currentUserId,
+                                                )) {
+                                                  ScaffoldMessenger.of(
+                                                    context,
+                                                  ).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                        "You are blocked by this user.",
+                                                      ),
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                      duration: Duration(
+                                                        seconds: 2,
+                                                      ),
+                                                    ),
+                                                  );
+                                                  return; // stop here
+                                                }
+                                              }
+                                              // For Send Call
+                                              sendCall(
+                                                isVideo: true,
+                                                receiverId: data.uid,
+                                                receiverName: data.name,
+                                                ref: ref,
+                                                context: context,
+                                              );
                                             },
                                             child: Row(
                                               mainAxisSize: MainAxisSize.min,

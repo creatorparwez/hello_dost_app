@@ -32,6 +32,7 @@ class ZegoServices {
             ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
             : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
       },
+
       invitationEvents: ZegoUIKitPrebuiltCallInvitationEvents(
         // When someone accepts our outgoing call (we are the CALLER)
         onOutgoingCallAccepted: (callID, callee) {
