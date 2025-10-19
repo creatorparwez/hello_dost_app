@@ -7,6 +7,7 @@ import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalRevenueOption/tota
 import 'package:zee_goo/admin/dashboard/Drawer%20Options/TotalUsersOption/total_users_screen.dart';
 import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
+import 'package:zee_goo/screens/home/m_screen.dart';
 
 class Admindashboard extends ConsumerStatefulWidget {
   const Admindashboard({super.key});
@@ -186,11 +187,15 @@ class _buildDrawerSection extends StatelessWidget {
             // Logout
             ListTile(
               onTap: () {
-                // logout
+                // Navigate to User Panel
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => MScreen()),
+                );
               },
               leading: Icon(Iconsax.logout, size: 30.sp, color: Colors.white),
               title: Text(
-                "Logout",
+                "Switch to User",
                 style: TextStyle(
                   fontSize: 22.sp,
                   fontWeight: FontWeight.w500,

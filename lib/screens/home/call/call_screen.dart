@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zee_goo/constants/app_constants.dart';
+import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/repository/coin_deduction_services.dart';
 import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
-class CallScreen extends StatefulWidget {
+class CallScreen extends ConsumerStatefulWidget {
   final String callerId;
   final String callerName;
   final String receiverId;
@@ -29,10 +31,10 @@ class CallScreen extends StatefulWidget {
   });
 
   @override
-  State<CallScreen> createState() => _CallScreenState();
+  ConsumerState<CallScreen> createState() => _CallScreenState();
 }
 
-class _CallScreenState extends State<CallScreen> {
+class _CallScreenState extends ConsumerState<CallScreen> {
   final CoinDeductionService _coinService = CoinDeductionService();
 
   bool _isHangingUp = false;
@@ -97,11 +99,16 @@ class _CallScreenState extends State<CallScreen> {
     _isSavingCallHistory = true;
 
     try {
+      // Get admin UID from provider
+      final adminData = ref.read(adminDataProvider).value;
+      final adminUid = adminData?.uid ?? 'Y17OPR8sdPCVJZebRQsC'; // Fallback to hardcoded if admin not found
+
       final summary = await _coinService.stopAndSave(
         callerId: widget.callerId,
         callerName: widget.callerName,
         receiverId: widget.receiverId,
         receiverName: widget.receiverName,
+        adminUid: adminUid,
         isVideo: widget.isVideo,
       );
       debugPrint(

@@ -71,6 +71,7 @@ class AuthRepository {
             "age": null,
             "interests": [],
             "languages": [],
+            "isAdmin": false,
             "balance": 100,
             "permission": false,
             "isOnline": false,
@@ -98,9 +99,9 @@ class AuthRepository {
       final user = _auth.currentUser;
       if (user == null) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("No user logged in")),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text("No user logged in")));
         }
         return;
       }
@@ -118,9 +119,7 @@ class AuthRepository {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 },
               );
             }
@@ -182,9 +181,7 @@ class AuthRepository {
                 context: globalContext,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  return const Center(child: CircularProgressIndicator());
                 },
               );
             }
@@ -225,9 +222,9 @@ class AuthRepository {
         Navigator.of(context, rootNavigator: true).popUntil((route) {
           return route.isFirst || !route.willHandlePopInternally;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to delete account: $e")),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Failed to delete account: $e")));
       }
     }
   }

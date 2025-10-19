@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:zee_goo/admin/dashboard/AdminDashboard.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
 import 'package:zee_goo/screens/home/home_tabs/call_history_screen.dart';
@@ -84,15 +85,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 5.h),
+                          // SizedBox(height: 5.h),
                           // Help & Support
-                          _buildSections(
-                            icon: Icons.help,
-                            title: "Help & Support",
-                            onTap: () {
-                              // Help & Support Link
-                            },
-                          ),
+                          // _buildSections(
+                          //   icon: Icons.help,
+                          //   title: "Help & Support",
+                          //   onTap: () {
+                          //     // Help & Support Link
+                          //   },
+                          // ),
                           SizedBox(height: 10.h),
                           // Account Settings
                           _buildSections(
@@ -197,15 +198,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 5.h),
-                          // Help & Support
-                          _buildSections(
-                            icon: Icons.help,
-                            title: "Help & Support",
-                            onTap: () {
-                              // Help & Support Link
-                            },
-                          ),
+                          // SizedBox(height: 5.h),
+                          // // Help & Support
+                          // _buildSections(
+                          //   icon: Icons.help,
+                          //   title: "Help & Support",
+                          //   onTap: () {
+                          //     // Help & Support Link
+                          //   },
+                          // ),
                           SizedBox(height: 10.h),
 
                           // Account Settings
@@ -282,6 +283,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         ],
                       ),
               ),
+              SizedBox(height: 10.h),
+              // Admin Panel Section
+              datas.isAdmin
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                      child: _buildSections(
+                        icon: Icons.person,
+                        title: "Switch to admin",
+                        onTap: () {
+                          // Navigate to Admin Panel
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (_) => Admindashboard()),
+                          );
+                        },
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           );
         },

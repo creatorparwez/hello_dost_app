@@ -16,7 +16,8 @@ class CoinDeductionService {
   bool _isRunning = false;
   late bool _isVideo;
 
-  static const String adminUid = 'Y17OPR8sdPCVJZebRQsC';
+  // Remove hardcoded admin UID - will be passed as parameter
+  // static const String adminUid = 'Y17OPR8sdPCVJZebRQsC';
 
   double _ratePerSecond(bool isVideo) => isVideo
       ? AppConstants.videoCallRatePerSecond
@@ -80,6 +81,7 @@ class CoinDeductionService {
     required String callerName,
     required String receiverId,
     required String receiverName,
+    required String adminUid,
     required bool isVideo,
     bool isCallCard = false,
   }) async {

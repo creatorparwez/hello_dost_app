@@ -25,6 +25,9 @@ class _ImageSliderScreenState extends State<GenderScreen> {
     'assets/males/male_3.png',
     'assets/males/male_4.png',
     'assets/males/male_5.png',
+    'assets/males/male_6.png',
+    'assets/males/male_7.png',
+    'assets/males/male_8.png',
   ];
 
   List<String> femaleImages = [
@@ -33,6 +36,9 @@ class _ImageSliderScreenState extends State<GenderScreen> {
     'assets/females/female_3.png',
     'assets/females/female_4.png',
     'assets/females/female_5.png',
+    'assets/females/female_6.png',
+    'assets/females/female_7.png',
+    'assets/females/female_8.png',
   ];
 
   bool isLoading = false;
