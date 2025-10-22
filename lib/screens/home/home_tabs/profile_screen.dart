@@ -20,6 +20,23 @@ class ProfileScreen extends ConsumerStatefulWidget {
   ConsumerState<ProfileScreen> createState() => _ProfileScreenState();
 }
 
+Future<void> goOnlineOROffline(String userId) async {
+  try {
+    final docRef = FirebaseFirestore.instance.collection('users').doc(userId);
+    final snapshot = await docRef.get();
+
+    if (snapshot.exists) {
+      final currentStatus = snapshot.data()?['isOnline'] ?? false;
+      await docRef.update({"isOnline": !currentStatus});
+      print("User status switched to ${!currentStatus ? 'Offline' : 'Online'}");
+    } else {
+      print("User document does not exist.");
+    }
+  } catch (e) {
+    print("Error while switching user status online/offline: $e");
+  }
+}
+
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
@@ -50,8 +67,61 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               SizedBox(height: 3.h),
               Text(
                 datas.name,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.w600),
               ),
+              SizedBox(height: 10.h),
+              // Online & Offline section
+              datas.gender ==
+                      "Female" // Only for Female
+                  ? Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                      child: Card(
+                        color: Colors.white,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 40.w,
+                            vertical: 5.h,
+                          ),
+                          child: Row(
+                            children: [
+                              datas.isOnline
+                                  ? Text(
+                                      "You are online",
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    )
+                                  : Text(
+                                      "You are Offline",
+                                      style: TextStyle(
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                              Spacer(),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepOrange,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.r),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  // To Change User Status
+                                  await goOnlineOROffline(datas.uid);
+                                },
+                                child: Text(
+                                  datas.isOnline ? "Go Offline" : "Go Online",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
               SizedBox(height: 10.h),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),

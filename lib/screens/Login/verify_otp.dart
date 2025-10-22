@@ -130,6 +130,7 @@ class _LoginScreenState extends ConsumerState<VerifyOTPScreen> {
                                 );
 
                                 if (userData.name.isNotEmpty) {
+                                  // For Permission
                                   await ZegoServices.requestPermissions();
                                   // // ✅ Initialize Zego for first-time user
                                   await ZegoServices.initZego(

@@ -96,3 +96,9 @@ final topFemalesProvider = StreamProvider<List<UserModel>>((ref) {
   final repo = ref.read(usersRepositoryProvider);
   return repo.getTopFemales();
 });
+
+// To get Random User
+final randomUserProvider = StreamProvider<UserModel?>((ref) {
+  final repo = ref.read(usersRepositoryProvider);
+  return repo.getRandomUserData();
+});

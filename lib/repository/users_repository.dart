@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:zee_goo/models/call_history_model.dart';
 import 'package:zee_goo/models/calls_model.dart';
@@ -166,6 +168,22 @@ class UsersRepository {
           return snapshot.docs
               .map((doc) => UserModel.fromMap(doc.data(), doc.id))
               .toList();
+        });
+  }
+
+  // Get Random User
+  Stream<UserModel?> getRandomUserData() {
+    return _firestore
+        .collection('users')
+        .where('gender', isEqualTo: "Female")
+        .where('isOnline', isEqualTo: true)
+        .snapshots()
+        .map((snapshot) {
+          if (snapshot.docs.isEmpty) null;
+          final random = Random();
+          final randomDoc = snapshot.docs[random.nextInt(snapshot.docs.length)];
+          final data = randomDoc.data();
+          return UserModel.fromMap(data, randomDoc.id);
         });
   }
 }
