@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zee_goo/constants/app_constants.dart';
+import 'package:zee_goo/gift_cards.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/repository/coin_deduction_services.dart';
-import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class CallScreen extends ConsumerStatefulWidget {
@@ -156,95 +154,48 @@ class _CallScreenState extends ConsumerState<CallScreen> {
         }
       },
       child: SafeArea(
-        child: ZegoUIKitPrebuiltCall(
-          appID: AppConstants.AAPID,
-          appSign: AppConstants.AAPSIGN,
-          userID: widget.callerId,
-          userName: widget.callerName,
-          callID: widget.callID,
-          config: widget.isVideo
-              ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
-              : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall(),
+        child: Stack(
+          children: [
+            ZegoUIKitPrebuiltCall(
+              appID: AppConstants.AAPID,
+              appSign: AppConstants.AAPSIGN,
+              userID: widget.callerId,
+              userName: widget.callerName,
+              callID: widget.callID,
+              config: widget.isVideo
+                  ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+                  : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall(),
 
-          events: ZegoUIKitPrebuiltCallEvents(
-            onCallEnd: (ZegoCallEndEvent event, VoidCallback defaultAction) async {
-              debugPrint("📞 Call ended with reason: ${event.reason}");
+              events: ZegoUIKitPrebuiltCallEvents(
+                onCallEnd: (ZegoCallEndEvent event, VoidCallback defaultAction) async {
+                  debugPrint("📞 Call ended with reason: ${event.reason}");
 
-              // Capture navigator before async operations
-              final navigator = Navigator.of(context);
-
-              // Save call history and stop coin deduction
-              await _safeEndCall();
-
-              // Call default action for cleanup
-              defaultAction.call();
-
-              // Navigate back when call ends - pop ALL screens to home
-              if (mounted) {
-                debugPrint("🔴 Normal call end - returning to home");
-                debugPrint("📊 Can pop? ${navigator.canPop()}");
-
-                try {
-                  // Count routes before popping
-                  int routeCount = 0;
-                  navigator.popUntil((route) {
-                    routeCount++;
-                    debugPrint(
-                      "📍 Route $routeCount: ${route.settings.name ?? 'unnamed'}, isFirst: ${route.isFirst}",
-                    );
-                    return route.isFirst;
-                  });
-                  debugPrint(
-                    "✅ Popped $routeCount routes, returned to home after call",
-                  );
-                } catch (e) {
-                  debugPrint("⚠️ Error with popUntil: $e");
-                  // Fallback: manual pops
-                  int poppedScreens = 0;
-                  while (mounted && navigator.canPop() && poppedScreens < 5) {
-                    navigator.pop();
-                    poppedScreens++;
-                    debugPrint("✅ Manual pop $poppedScreens");
-                  }
-                }
-              }
-            },
-            user: ZegoCallUserEvents(
-              onLeave: (user) {
-                // When remote user leaves the call
-                debugPrint("👋 User left the call: ${user.name}");
-
-                if (!mounted || _isHangingUp) return;
-
-                debugPrint(
-                  "⚠️ Remote user disconnected - ending call for caller",
-                );
-
-                // Mark as hanging up to prevent duplicate calls
-                _isHangingUp = true;
-
-                // Capture context and navigator BEFORE any async operations
-                final capturedContext = context;
-                final navigator = Navigator.of(capturedContext);
-
-                // Handle cleanup and navigation immediately
-                Future.microtask(() async {
-                  if (!mounted) return;
-
-                  debugPrint("🔴 Saving call data after remote user left");
+                  // Capture navigator before async operations
+                  final navigator = Navigator.of(context);
 
                   // Save call history and stop coin deduction
                   await _safeEndCall();
 
-                  // Navigate back to home screen
-                  if (mounted && navigator.canPop()) {
-                    debugPrint("🔴 Remote user left - returning to home");
+                  // Call default action for cleanup
+                  defaultAction.call();
+
+                  // Navigate back when call ends - pop ALL screens to home
+                  if (mounted) {
+                    debugPrint("🔴 Normal call end - returning to home");
+                    debugPrint("📊 Can pop? ${navigator.canPop()}");
 
                     try {
-                      // Pop all screens to return to home
-                      navigator.popUntil((route) => route.isFirst);
+                      // Count routes before popping
+                      int routeCount = 0;
+                      navigator.popUntil((route) {
+                        routeCount++;
+                        debugPrint(
+                          "📍 Route $routeCount: ${route.settings.name ?? 'unnamed'}, isFirst: ${route.isFirst}",
+                        );
+                        return route.isFirst;
+                      });
                       debugPrint(
-                        "✅ Successfully returned to home after remote user left",
+                        "✅ Popped $routeCount routes, returned to home after call",
                       );
                     } catch (e) {
                       debugPrint("⚠️ Error with popUntil: $e");
@@ -259,10 +210,64 @@ class _CallScreenState extends ConsumerState<CallScreen> {
                       }
                     }
                   }
-                });
-              },
+                },
+                user: ZegoCallUserEvents(
+                  onLeave: (user) {
+                    // When remote user leaves the call
+                    debugPrint("👋 User left the call: ${user.name}");
+
+                    if (!mounted || _isHangingUp) return;
+
+                    debugPrint(
+                      "⚠️ Remote user disconnected - ending call for caller",
+                    );
+
+                    // Mark as hanging up to prevent duplicate calls
+                    _isHangingUp = true;
+
+                    // Capture context and navigator BEFORE any async operations
+                    final capturedContext = context;
+                    final navigator = Navigator.of(capturedContext);
+
+                    // Handle cleanup and navigation immediately
+                    Future.microtask(() async {
+                      if (!mounted) return;
+
+                      debugPrint("🔴 Saving call data after remote user left");
+
+                      // Save call history and stop coin deduction
+                      await _safeEndCall();
+
+                      // Navigate back to home screen
+                      if (mounted && navigator.canPop()) {
+                        debugPrint("🔴 Remote user left - returning to home");
+
+                        try {
+                          // Pop all screens to return to home
+                          navigator.popUntil((route) => route.isFirst);
+                          debugPrint(
+                            "✅ Successfully returned to home after remote user left",
+                          );
+                        } catch (e) {
+                          debugPrint("⚠️ Error with popUntil: $e");
+                          // Fallback: manual pops
+                          int poppedScreens = 0;
+                          while (mounted &&
+                              navigator.canPop() &&
+                              poppedScreens < 5) {
+                            navigator.pop();
+                            poppedScreens++;
+                            debugPrint("✅ Manual pop $poppedScreens");
+                          }
+                        }
+                      }
+                    });
+                  },
+                ),
+              ),
             ),
-          ),
+            Positioned(bottom: 150, right: 30, child: GiftCardsScreen()),
+          ],
         ),
       ),
     );

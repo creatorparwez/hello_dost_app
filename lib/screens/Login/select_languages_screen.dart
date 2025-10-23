@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/age_screen.dart';
-import 'package:zee_goo/screens/Login/gender_screen.dart';
-import 'package:zee_goo/screens/Login/name_screen.dart';
 
 class SelectLanguagesScreen extends ConsumerStatefulWidget {
   final String gender;

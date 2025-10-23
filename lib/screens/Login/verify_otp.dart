@@ -7,7 +7,6 @@ import 'package:zee_goo/models/user_model.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/repository/zego_services.dart';
 import 'package:zee_goo/screens/Login/gender_screen.dart';
-import 'package:zee_goo/screens/Login/select_languages_screen.dart';
 import 'package:zee_goo/screens/home/m_screen.dart';
 
 class VerifyOTPScreen extends ConsumerStatefulWidget {

@@ -6,9 +6,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/name_screen.dart';
-import 'package:zee_goo/screens/Login/permission_waiting_screen.dart';
-
-import 'package:zee_goo/screens/home/m_screen.dart';
 
 class AgeScreen extends ConsumerStatefulWidget {
   final String gender;

@@ -3,11 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:zee_goo/admin/dashboard/AdminDashboard.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
-import 'package:zee_goo/screens/home/home_tabs/call_history_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/account_settings.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/add_coins_screen.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/earnings_screen.dart';
@@ -29,7 +27,7 @@ Future<void> goOnlineOROffline(String userId) async {
       final currentStatus = snapshot.data()?['isOnline'] ?? false;
       final currentAvailableStatus = snapshot.data()?['isAvailable'] ?? false;
       await docRef.update({"isOnline": !currentStatus});
-      await docRef.update({"isAvailable": !currentStatus});
+      await docRef.update({"isAvailable": !currentAvailableStatus});
       print("User status switched to ${!currentStatus ? 'Offline' : 'Online'}");
     } else {
       print("User document does not exist.");
