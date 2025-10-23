@@ -12,7 +12,8 @@ import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 class ZegoServices {
-  static StreamSubscription<ZegoInRoomCommandReceivedData>? _giftCommandSubscription;
+  static StreamSubscription<ZegoInRoomCommandReceivedData>?
+  _giftCommandSubscription;
 
   // Permission
   static Future<void> requestPermissions() async {
@@ -20,7 +21,13 @@ class ZegoServices {
       Permission.camera,
       Permission.microphone,
       Permission.notification,
+      Permission.systemAlertWindow, // For full-screen incoming calls
     ].request();
+
+    // Request USE_FULL_SCREEN_INTENT permission (Android 14+)
+    if (await Permission.scheduleExactAlarm.isDenied) {
+      await Permission.scheduleExactAlarm.request();
+    }
   }
 
   // Set up global gift command listener (works for both caller and callee)
@@ -29,29 +36,35 @@ class ZegoServices {
 
     _giftCommandSubscription?.cancel(); // Cancel any existing subscription
 
-    _giftCommandSubscription = ZegoUIKit().getInRoomCommandReceivedStream().listen((
-      event,
-    ) {
-      debugPrint('📨 GLOBAL: Received command from ${event.fromUser.id}: ${event.command}');
-      try {
-        final commandData = jsonDecode(event.command);
-        debugPrint('📦 GLOBAL: Parsed command data: $commandData');
+    _giftCommandSubscription = ZegoUIKit().getInRoomCommandReceivedStream().listen(
+      (event) {
+        debugPrint(
+          '📨 GLOBAL: Received command from ${event.fromUser.id}: ${event.command}',
+        );
+        try {
+          final commandData = jsonDecode(event.command);
+          debugPrint('📦 GLOBAL: Parsed command data: $commandData');
 
-        if (commandData['type'] == 'gift') {
-          final imagePath = commandData['imagePath'] as String;
-          debugPrint('🎁 GLOBAL: Received gift: $imagePath from ${event.fromUser.name}');
+          if (commandData['type'] == 'gift') {
+            final imagePath = commandData['imagePath'] as String;
+            debugPrint(
+              '🎁 GLOBAL: Received gift: $imagePath from ${event.fromUser.name}',
+            );
 
-          // Use the global gift overlay manager
-          GiftOverlayManager().showGift(imagePath);
+            // Use the global gift overlay manager
+            GiftOverlayManager().showGift(imagePath);
+          }
+        } catch (e) {
+          debugPrint('❌ GLOBAL: Error parsing gift command: $e');
         }
-      } catch (e) {
-        debugPrint('❌ GLOBAL: Error parsing gift command: $e');
-      }
-    }, onError: (error) {
-      debugPrint('❌ GLOBAL: Stream error: $error');
-    }, onDone: () {
-      debugPrint('🔴 GLOBAL: Gift command stream closed');
-    });
+      },
+      onError: (error) {
+        debugPrint('❌ GLOBAL: Stream error: $error');
+      },
+      onDone: () {
+        debugPrint('🔴 GLOBAL: Gift command stream closed');
+      },
+    );
 
     debugPrint('✅ GLOBAL: Gift command listener set up successfully');
   }
@@ -73,6 +86,15 @@ class ZegoServices {
       userID: userId,
       userName: userName,
       plugins: [ZegoUIKitSignalingPlugin()],
+      ringtoneConfig: ZegoCallRingtoneConfig(
+        incomingCallPath: 'assets/sounds/call_ringtone.mp3',
+        outgoingCallPath: 'assets/sounds/call_ringtone.mp3',
+      ),
+      notificationConfig: ZegoCallInvitationNotificationConfig(
+        androidNotificationConfig: ZegoCallAndroidNotificationConfig(
+          showFullScreen: true,
+        ),
+      ),
       requireConfig: (ZegoCallInvitationData data) {
         return data.type == ZegoCallInvitationType.videoCall
             ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
@@ -80,6 +102,21 @@ class ZegoServices {
       },
 
       invitationEvents: ZegoUIKitPrebuiltCallInvitationEvents(
+        // When an incoming call is received (CALLEE receives call notification)
+        onIncomingCallReceived:
+            (
+              String callID,
+              ZegoCallUser caller,
+              ZegoCallInvitationType callType,
+              List<ZegoCallUser> callees,
+              String customData,
+            ) {
+              debugPrint(
+                "📞 Incoming call received from ${caller.name} - callID: $callID, type: $callType",
+              );
+              // The default ZegoCloud incoming call page will automatically show in full screen
+            },
+
         // When someone accepts our outgoing call (we are the CALLER)
         onOutgoingCallAccepted: (callID, callee) {
           debugPrint("📞 Call accepted by ${callee.name} - CALLER SIDE");

@@ -16,6 +16,8 @@
 <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
 <!--for bring app to foreground from background in Android 10 -->
 <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+<!-- Required for full-screen incoming call notifications -->
+<uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <application
         android:label="Hello Dost"
         android:name="${applicationName}"
@@ -28,7 +30,9 @@
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues

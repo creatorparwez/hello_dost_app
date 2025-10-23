@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/firebase_options.dart';
+import 'package:zee_goo/gift_cards.dart';
 import 'package:zee_goo/gift_overlay_manager.dart';
 import 'package:zee_goo/screens/splashScreen.dart';
 

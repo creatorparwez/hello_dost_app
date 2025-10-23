@@ -1,11 +1,8 @@
 import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/gift_overlay_manager.dart';
 import 'package:zego_uikit/zego_uikit.dart';
-import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class GiftCardsScreen extends StatefulWidget {
   const GiftCardsScreen({super.key});
@@ -64,10 +61,10 @@ class _GiftCardsScreenState extends State<GiftCardsScreen> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
+                      Text(
                         "Choose a Gift",
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 22.sp,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -79,7 +76,7 @@ class _GiftCardsScreenState extends State<GiftCardsScreen> {
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate:
                             const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 4,
+                              crossAxisCount: 5,
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 10,
                             ),
@@ -105,19 +102,11 @@ class _GiftCardsScreenState extends State<GiftCardsScreen> {
                                 ),
                                 borderRadius: BorderRadius.circular(50.r),
                               ),
-                              child: Padding(
-                                padding: EdgeInsets.all(6.w),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Image.asset(
-                                      imagePath,
-                                      height: 45.h,
-                                      width: 45.w,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ],
-                                ),
+                              child: Image.asset(
+                                imagePath,
+                                height: 30.h,
+                                width: 30.w,
+                                fit: BoxFit.contain,
                               ),
                             ),
                           );
