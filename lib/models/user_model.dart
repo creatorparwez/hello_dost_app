@@ -15,6 +15,7 @@ class UserModel {
   final bool permission;
   final bool isOnline;
   final bool isAdmin;
+  final bool isAvailable;
   final String? imagePath;
   final List<String> blockedUsers; // ✅ NEW FIELD
 
@@ -33,6 +34,7 @@ class UserModel {
     this.permission = false,
     this.isOnline = false,
     this.isAdmin = false,
+    this.isAvailable = false,
     this.imagePath,
     this.blockedUsers = const [], // ✅ default empty list
   }) : createdAt = createdAt ?? DateTime.now();
@@ -68,6 +70,7 @@ class UserModel {
           : DateTime.now(),
       permission: map['permission'] ?? false,
       isOnline: map['isOnline'] ?? false,
+      isAvailable: map['isAvailable'] ?? false,
       isAdmin: map['isAdmin'] ?? false,
       imagePath: map['imagePath'],
     );
@@ -91,6 +94,7 @@ class UserModel {
       "permission": permission,
       "isOnline": isOnline,
       "isAdmin": isAdmin,
+      "isAvailable": isAvailable,
       "imagePath": imagePath,
     };
   }
@@ -109,6 +113,7 @@ class UserModel {
     bool? permission,
     bool? isOnline,
     bool? isAdmin,
+    bool? isAvailable,
     String? imagePath,
   }) {
     return UserModel(
@@ -127,6 +132,7 @@ class UserModel {
       permission: permission ?? this.permission,
       isOnline: isOnline ?? this.isOnline,
       isAdmin: isAdmin ?? this.isAdmin,
+      isAvailable: isAvailable ?? this.isAvailable,
       imagePath: imagePath ?? this.imagePath,
     );
   }

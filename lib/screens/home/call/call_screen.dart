@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,6 +51,23 @@ class _CallScreenState extends ConsumerState<CallScreen> {
       isVideo: widget.isVideo,
       onBalanceZero: _handleBalanceZero, // auto end if coins run out
     );
+    updateAvailableFieldToBusy();
+  }
+
+  // Update Callee Available Field
+  Future<void> updateAvailableFieldToBusy() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.receiverId)
+        .update({"isAvailable": false});
+  }
+
+  // Update Callee Available Field
+  Future<void> updateAvailableFieldToAvailable() async {
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.receiverId)
+        .update({"isAvailable": true});
   }
 
   /// Called when caller runs out of balance
@@ -101,7 +119,9 @@ class _CallScreenState extends ConsumerState<CallScreen> {
     try {
       // Get admin UID from provider
       final adminData = ref.read(adminDataProvider).value;
-      final adminUid = adminData?.uid ?? 'Y17OPR8sdPCVJZebRQsC'; // Fallback to hardcoded if admin not found
+      final adminUid =
+          adminData?.uid ??
+          'Y17OPR8sdPCVJZebRQsC'; // Fallback to hardcoded if admin not found
 
       final summary = await _coinService.stopAndSave(
         callerId: widget.callerId,
@@ -114,6 +134,7 @@ class _CallScreenState extends ConsumerState<CallScreen> {
       debugPrint(
         "Call ended. Duration: ${summary.seconds}s, Coins deducted: ${summary.totalCoinsDeducted}",
       );
+      updateAvailableFieldToAvailable();
     } catch (e) {
       debugPrint("Error ending call: $e");
     }

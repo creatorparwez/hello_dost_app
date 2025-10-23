@@ -177,6 +177,7 @@ class UsersRepository {
         .collection('users')
         .where('gender', isEqualTo: "Female")
         .where('isOnline', isEqualTo: true)
+        .where('isAvailable', isEqualTo: true)
         .snapshots()
         .map((snapshot) {
           if (snapshot.docs.isEmpty) null;

@@ -57,6 +57,7 @@ class AuthRepository {
           // ✅ User already exists → set isOnline to true
           await userDocRef.update({
             "isOnline": true,
+            "isAvailable": true,
             "name":
                 name ?? userDoc.data()?['name'] ?? "", // optionally update name
           });
@@ -75,6 +76,7 @@ class AuthRepository {
             "balance": 100,
             "permission": false,
             "isOnline": false,
+            "isAvailable": false,
             "createdAt": FieldValue.serverTimestamp(),
           });
         }

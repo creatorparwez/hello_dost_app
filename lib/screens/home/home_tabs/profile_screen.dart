@@ -27,7 +27,9 @@ Future<void> goOnlineOROffline(String userId) async {
 
     if (snapshot.exists) {
       final currentStatus = snapshot.data()?['isOnline'] ?? false;
+      final currentAvailableStatus = snapshot.data()?['isAvailable'] ?? false;
       await docRef.update({"isOnline": !currentStatus});
+      await docRef.update({"isAvailable": !currentStatus});
       print("User status switched to ${!currentStatus ? 'Offline' : 'Online'}");
     } else {
       print("User document does not exist.");

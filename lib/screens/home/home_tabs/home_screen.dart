@@ -65,9 +65,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 final otherUsers = allUsersData
                     .where(
                       (user) =>
-                          user.uid != currentUserId && user.isOnline == true,
+                          user.uid != currentUserId &&
+                          user.isOnline == true &&
+                          user.isAvailable == true,
                     )
                     .toList();
+
+                if (otherUsers.isEmpty) {
+                  return Center(child: Text("No User Available"));
+                }
 
                 // Shuffle the list to randomize user positions
                 // Using _shuffleTrigger to trigger re-shuffle on timer
@@ -615,7 +621,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   );
                 },
-                error: (err, _) => Center(child: Text(err.toString())),
+                error: (err, _) {
+                  print(err.toString());
+                  return const SizedBox();
+                },
                 loading: () => Center(child: CircularProgressIndicator()),
               )
             : SizedBox.shrink(),

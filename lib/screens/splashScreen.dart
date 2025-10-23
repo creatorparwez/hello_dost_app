@@ -55,7 +55,7 @@ class _SplashscreenState extends ConsumerState<Splashscreen> {
             await FirebaseFirestore.instance
                 .collection('users')
                 .doc(user.uid)
-                .update({'isOnline': true});
+                .update({'isOnline': true, 'isAvailable': true});
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (_) => const MScreen()),
@@ -72,7 +72,7 @@ class _SplashscreenState extends ConsumerState<Splashscreen> {
           await FirebaseFirestore.instance
               .collection('users')
               .doc(user.uid)
-              .update({'isOnline': true});
+              .update({'isOnline': true, 'isAvailable': true});
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (_) => const MScreen()),
