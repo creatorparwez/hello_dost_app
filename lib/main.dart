@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/firebase_options.dart';
-import 'package:zee_goo/gift_cards.dart';
+import 'package:zee_goo/gift_overlay_manager.dart';
 import 'package:zee_goo/screens/splashScreen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -30,6 +30,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
+        builder: (context, child) {
+          return GiftOverlayWidget(
+            key: GiftOverlayManager().overlayKey,
+            child: child ?? const SizedBox(),
+          );
+        },
         home: Splashscreen(),
       ),
     );

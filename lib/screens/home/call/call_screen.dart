@@ -1,10 +1,15 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:zee_goo/constants/app_constants.dart';
 import 'package:zee_goo/gift_cards.dart';
+import 'package:zee_goo/overlay.dart';
 import 'package:zee_goo/providers/User/user_provider.dart';
 import 'package:zee_goo/repository/coin_deduction_services.dart';
+import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class CallScreen extends ConsumerStatefulWidget {
@@ -38,10 +43,14 @@ class _CallScreenState extends ConsumerState<CallScreen> {
 
   bool _isHangingUp = false;
   bool _isSavingCallHistory = false;
+  // For ReceivedData
+  StreamSubscription<ZegoInRoomCommandReceivedData>? _commandSubscription;
 
   @override
   void initState() {
     super.initState();
+    debugPrint('🔵 CallScreen initState - userID: ${widget.callerId}, userName: ${widget.callerName}');
+
     // Start per-second coin deduction
     _coinService.start(
       callerId: widget.callerId,
@@ -50,6 +59,57 @@ class _CallScreenState extends ConsumerState<CallScreen> {
       onBalanceZero: _handleBalanceZero, // auto end if coins run out
     );
     updateAvailableFieldToBusy();
+
+    // Delay the gift listener setup to ensure ZegoUIKit is fully initialized
+    // Use a longer delay to ensure the room is joined
+    Future.delayed(const Duration(seconds: 2), () {
+      debugPrint('⏰ 2 seconds passed, mounted: $mounted');
+      if (mounted) {
+        debugPrint('🎯 About to call _listenForGiftCommands');
+        _listenForGiftCommands();
+      }
+    });
+  }
+
+  // Listen for gift Command
+  void _listenForGiftCommands() {
+    debugPrint('🎧 Setting up gift command listener...');
+    _commandSubscription = ZegoUIKit().getInRoomCommandReceivedStream().listen(
+      (event) {
+        debugPrint(
+          '📨📨🎁🎁🎁 Received command from ${event.fromUser.id}: ${event.command}',
+        );
+        try {
+          // Parse the command
+          final commandData = jsonDecode(event.command);
+          debugPrint('📦 Parsed command data: $commandData');
+
+          // Check if it's a gift command
+          if (commandData['type'] == 'gift') {
+            final imagePath = commandData['imagePath'] as String;
+            debugPrint(
+              '🎁 Received gift: $imagePath from ${event.fromUser.name}',
+            );
+            // Show the gift overlay on receiver's screen
+            if (mounted) {
+              debugPrint('✅ Showing gift overlay on receiver screen');
+              showGiftOverlay(context, imagePath);
+            } else {
+              debugPrint('❌ Widget not mounted, cannot show gift');
+            }
+          }
+        } catch (e) {
+          debugPrint('❌ Error parsing gift command: $e');
+        }
+      },
+      onError: (error) {
+        debugPrint('❌ Stream error: $error');
+      },
+      onDone: () {
+        debugPrint('🔴 Gift command stream closed');
+      },
+    );
+    debugPrint('✅ Gift command listener set up successfully');
   }
 
   // Update Callee Available Field
@@ -141,6 +201,8 @@ class _CallScreenState extends ConsumerState<CallScreen> {
   @override
   void dispose() {
     _coinService.stop();
+    // Cancel subscription
+    _commandSubscription?.cancel();
     super.dispose();
   }
 

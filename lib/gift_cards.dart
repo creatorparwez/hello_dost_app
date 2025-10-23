@@ -1,7 +1,11 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:zee_goo/overlay.dart';
+import 'package:zee_goo/gift_overlay_manager.dart';
+import 'package:zego_uikit/zego_uikit.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 class GiftCardsScreen extends StatefulWidget {
   const GiftCardsScreen({super.key});
@@ -21,6 +25,23 @@ class _GiftCardsScreenState extends State<GiftCardsScreen> {
 
   int? selectedGift; // store index of selected card
   String? selectedImage;
+  // Send gift message to callee via ZegoCloud
+  Future<void> sendGiftMessage(String imagePath) async {
+    try {
+      final messageData = jsonEncode({'type': 'gift', 'imagePath': imagePath});
+      debugPrint('📤 Attempting to send gift command: $messageData');
+
+      final success = await ZegoUIKit().sendInRoomCommand(messageData, []);
+
+      if (success) {
+        debugPrint('✅ Gift command sent successfully: $imagePath');
+      } else {
+        debugPrint('❌ Failed to send gift command');
+      }
+    } catch (e) {
+      debugPrint('❌ Exception while sending gift: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +135,7 @@ class _GiftCardsScreenState extends State<GiftCardsScreen> {
                         ),
                         onPressed: tempSelectedGift == null
                             ? null
-                            : () {
+                            : () async {
                                 setState(() {
                                   selectedGift = tempSelectedGift;
                                   selectedImage =
@@ -122,8 +143,12 @@ class _GiftCardsScreenState extends State<GiftCardsScreen> {
                                   print('hhhhh selected imgg $selectedImage');
                                 });
                                 Navigator.pop(context);
-                                // Show the gift overlay for 2 seconds
-                                showGiftOverlay(context, selectedImage!);
+
+                                // Show the gift overlay for sender using global manager
+                                GiftOverlayManager().showGift(selectedImage!);
+
+                                // Send gift command to other user
+                                await sendGiftMessage(selectedImage!);
                               },
                         child: const Center(
                           child: Text(
