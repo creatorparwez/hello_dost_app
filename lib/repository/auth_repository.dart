@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:zee_goo/main.dart';
-import 'package:zee_goo/screens/Account_Deletetion/verify_otp_delete.dart';
+
 import 'package:zee_goo/screens/Login/send_otp.dart';
 
 class AuthRepository {

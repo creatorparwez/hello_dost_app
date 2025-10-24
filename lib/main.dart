@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/firebase_options.dart';
 import 'package:zee_goo/gift_overlay_manager.dart';
 import 'package:zee_goo/screens/Account_Deletetion/send_otp_delete.dart';
-import 'package:zee_goo/screens/Account_Deletetion/verify_otp_delete.dart';
+
 import 'package:zee_goo/screens/splashScreen.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
