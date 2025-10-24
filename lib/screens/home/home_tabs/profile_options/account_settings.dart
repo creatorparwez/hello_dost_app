@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:zee_goo/repository/auth_repository.dart';
+import 'package:zee_goo/screens/Account_Deletetion/send_otp_delete.dart';
 import 'package:zee_goo/screens/home/home_tabs/profile_options/account_settings/blocked_users_widget.dart';
 
 class AccountSettings extends StatefulWidget {
@@ -42,34 +43,62 @@ class _AccountSettingsState extends State<AccountSettings> {
         child: Column(
           children: [
             SizedBox(height: 10.h),
-            // Blocked Users
-            widget.gender == "Female"
-                ? _buildSections(
-                    icon: Icons.warning,
-                    title: "Blocked Users",
-                    onTap: () async {
-                      // Blocked Users List
-                      print("Blocked Usersssss :   $blockedUserIds");
-                      final result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => BlockedUsersWidget(
-                            currentUserId: widget.userId,
-                            blockedUserIds: blockedUserIds,
-                          ),
-                        ),
-                      );
 
-                      // Update the blocked users list if result is returned
-                      if (result != null && result is List<String>) {
-                        setState(() {
-                          blockedUserIds = result;
-                        });
-                        print("Updated Blocked Users: $blockedUserIds");
-                      }
-                    },
-                  )
-                : SizedBox.shrink(),
+            // Blocked Users
+            _buildSections(
+              icon: Icons.warning,
+              title: "Blocked Users",
+              onTap: () async {
+                // Blocked Users List
+                print("Blocked Usersssss :   $blockedUserIds");
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => BlockedUsersWidget(
+                      currentUserId: widget.userId,
+                      blockedUserIds: blockedUserIds,
+                    ),
+                  ),
+                );
+
+                // Update the blocked users list if result is returned
+                if (result != null && result is List<String>) {
+                  setState(() {
+                    blockedUserIds = result;
+                  });
+                  print("Updated Blocked Users: $blockedUserIds");
+                }
+              },
+            ),
+
+            // Code commented for only block section show for Female
+            // widget.gender == "Female"
+            //     ? _buildSections(
+            //         icon: Icons.warning,
+            //         title: "Blocked Users",
+            //         onTap: () async {
+            //           // Blocked Users List
+            //           print("Blocked Usersssss :   $blockedUserIds");
+            //           final result = await Navigator.push(
+            //             context,
+            //             MaterialPageRoute(
+            //               builder: (_) => BlockedUsersWidget(
+            //                 currentUserId: widget.userId,
+            //                 blockedUserIds: blockedUserIds,
+            //               ),
+            //             ),
+            //           );
+
+            //           // Update the blocked users list if result is returned
+            //           if (result != null && result is List<String>) {
+            //             setState(() {
+            //               blockedUserIds = result;
+            //             });
+            //             print("Updated Blocked Users: $blockedUserIds");
+            //           }
+            //         },
+            //       )
+            //     : SizedBox.shrink(),
             SizedBox(height: 6.h),
             // Delete Account
             _buildSections(
@@ -133,7 +162,15 @@ class _AccountSettingsState extends State<AccountSettings> {
                                       borderRadius: BorderRadius.circular(8.r),
                                     ),
                                   ),
-                                  onPressed: () => Navigator.of(context).pop(),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            SendOTPScreenForDelete(),
+                                      ),
+                                    );
+                                  },
 
                                   child: Text(
                                     "Yes",

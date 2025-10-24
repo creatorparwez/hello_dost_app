@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:zee_goo/main.dart';
+import 'package:zee_goo/screens/Account_Deletetion/verify_otp_delete.dart';
 import 'package:zee_goo/screens/Login/send_otp.dart';
 
 class AuthRepository {
@@ -95,6 +97,117 @@ class AuthRepository {
     await _auth.signOut();
   }
 
+  // For Account Deletion
+
+  // String _verificationIdd = "";
+
+  // /// ✅ Send OTP for deletion
+  // Future<void> sendOTPForDeletion({
+  //   required BuildContext context,
+  //   required String phoneNumber,
+  // }) async {
+  //   try {
+  //     await _auth.verifyPhoneNumber(
+  //       phoneNumber: phoneNumber,
+  //       timeout: const Duration(seconds: 60),
+
+  //       // Auto verification (only on Android sometimes)
+  //       verificationCompleted: (PhoneAuthCredential credential) async {
+  //         await _auth.signInWithCredential(credential);
+  //       },
+
+  //       // Verification failed
+  //       verificationFailed: (FirebaseAuthException ex) {
+  //         ScaffoldMessenger.of(context).showSnackBar(
+  //           SnackBar(content: Text("Verification failed: ${ex.message}")),
+  //         );
+  //       },
+
+  //       // OTP sent successfully
+  //       codeSent: (String verificationId, int? resendToken) {
+  //         _verificationId = verificationId;
+
+  //         // Navigate to OTP verification screen
+  //         Navigator.push(
+  //           context,
+  //           PageTransition(
+  //             type: PageTransitionType.fade,
+  //             child: const VerifyOTPScreenForDelete(),
+  //           ),
+  //         );
+  //       },
+
+  //       // Timeout
+  //       codeAutoRetrievalTimeout: (String verificationId) {
+  //         _verificationId = verificationId;
+  //       },
+  //     );
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(SnackBar(content: Text("Error sending OTP: $e")));
+  //   }
+  // }
+
+  // /// ✅ Verify OTP and delete account
+  // Future<User?> verifyOTPForDelete(String smsCode, BuildContext context) async {
+  //   try {
+  //     if (_verificationIdd.isEmpty) {
+  //       throw Exception("No verification ID found. Please try again.");
+  //     }
+
+  //     // Create phone auth credential
+  //     final credential = PhoneAuthProvider.credential(
+  //       verificationId: _verificationIdd,
+  //       smsCode: smsCode,
+  //     );
+
+  //     // Sign in with the credential
+  //     final userCredential = await _auth.signInWithCredential(credential);
+  //     final user = userCredential.user;
+
+  //     if (user != null) {
+  //       final userDocRef = _firestore.collection("users").doc(user.uid);
+  //       final userDoc = await userDocRef.get();
+
+  //       // First delete Firestore user document
+  //       if (userDoc.exists) {
+  //         await userDocRef.delete();
+  //       }
+
+  //       // Then delete Firebase Auth user
+  //       await user.delete();
+  //       // SignOut
+  //       await _auth.signOut();
+
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         const SnackBar(content: Text("Account deleted successfully.")),
+  //       );
+
+  //       // Navigate back to login/start screen
+  //       Navigator.pushAndRemoveUntil(
+  //         context,
+  //         PageTransition(
+  //           type: PageTransitionType.fade,
+  //           child: const SendOTPScreen(), // your login/start screen
+  //         ),
+  //         (route) => false,
+  //       );
+  //     }
+
+  //     return user;
+  //   } on FirebaseAuthException catch (e) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(content: Text("OTP verification failed: ${e.message}")),
+  //     );
+  //     return null;
+  //   } catch (e) {
+  //     ScaffoldMessenger.of(
+  //       context,
+  //     ).showSnackBar(SnackBar(content: Text("Unexpected error: $e")));
+  //     return null;
+  //   }
+  // }
   // Account Delete
   Future<void> deleteAccount(BuildContext context) async {
     try {
